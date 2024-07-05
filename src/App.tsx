@@ -1,15 +1,4 @@
-import ability1 from '/assets/ability1.png'
-import ability2 from '/assets/ability2.png'
-import ability3 from '/assets/ability3.png'
-import ability4 from '/assets/ability4.png'
-import ability5 from '/assets/ability5.png'
-import ability6 from '/assets/ability6.png'
-import ability7 from '/assets/ability7.png'
-import ability8 from '/assets/ability8.png'
-import ability9 from '/assets/ability9.png'
-import ability10 from '/assets/ability10.png'
-import ability11 from '/assets/ability11.png'
-import ability12 from '/assets/ability12.png'
+
 import { Fragment, PropsWithChildren, useState } from 'react'
 import reactLogo from './assets/react.svg'
 import twaLogo from './assets/tapps.png'
@@ -138,7 +127,7 @@ function MainMatch() {
             }))
           }
         }}><p>{currentUnit.traits[0].name}</p><img
-            src={'/assets/ability' + currentUnit.traits[0].id + '.png'}
+            src={currentUnit.traits[0].imgUrl}
             className=""
           // onClick={action}
           /></button>
@@ -152,7 +141,7 @@ function MainMatch() {
             }))
           }
         }}><p>{currentUnit.traits[1].name}</p><img
-            src={'/assets/ability' + currentUnit.traits[1].id + '.png'}
+            src={currentUnit.traits[0].imgUrl}
             className=""
           // onClick={action}
           /></button>
@@ -166,7 +155,7 @@ function MainMatch() {
             }))
           }
         }}><p>{currentUnit.traits[2].name}</p><img
-            src={'/assets/ability' + currentUnit.traits[2].id + '.png'}
+            src={currentUnit.traits[0].imgUrl}
             className=""
           // onClick={action}
           /></button>

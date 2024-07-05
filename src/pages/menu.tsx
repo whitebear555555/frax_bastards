@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import './game.tsx'
 import { Match, Unit, units } from './game.tsx'
 import path_menu from '/assets/path_menu.png'
+import squad from '/assets/squad.png'
 
 export default function Menu() {
   return (
@@ -14,7 +15,7 @@ export default function Menu() {
         Play
       </Link>
       <img
-        src={'/assets/squad.png'}
+        src={squad}
         className=""
       // onClick={action}
       />

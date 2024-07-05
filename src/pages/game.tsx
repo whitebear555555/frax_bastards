@@ -36,6 +36,7 @@ export type Unit = {
 export type Trait = {
   id: number;
   name: string;
+  imgUrl: string;
   condition: Condition; //[]
   target: Target;
   effect: Effect;
@@ -93,6 +94,18 @@ export type Effect = ({
 });
 export type Color = ({ type: "Uncolor" } | { type: "Red" } | { type: "Green" } | { type: "Blue" });
 
+import ability1 from '/assets/ability1.png'
+import ability2 from '/assets/ability2.png'
+import ability3 from '/assets/ability3.png'
+import ability4 from '/assets/ability4.png'
+import ability5 from '/assets/ability5.png'
+import ability6 from '/assets/ability6.png'
+import ability7 from '/assets/ability7.png'
+import ability8 from '/assets/ability8.png'
+import ability9 from '/assets/ability9.png'
+import ability10 from '/assets/ability10.png'
+import ability11 from '/assets/ability11.png'
+import ability12 from '/assets/ability12.png'
 export const units: Unit[] = [
   {
     player_owner: 0,
@@ -106,6 +119,7 @@ export const units: Unit[] = [
     traits: [
       {
         id: 1,
+        imgUrl: ability1,
         name: "Fire Punch",
         condition: { type: "Activation", cost: 2 },
         rarity: {
@@ -117,6 +131,7 @@ export const units: Unit[] = [
       {
         id: 6,
         name: "Water Resist",
+        imgUrl: ability7,
         condition: { type: "TakeDamage" },
         rarity: {
           type: "Common"
@@ -127,6 +142,7 @@ export const units: Unit[] = [
       {
         id: 10,
         name: "Stun Punch",
+        imgUrl: ability4,
         condition: { type: "Activation", cost: 12 },
         rarity: {
           type: "Common"
@@ -149,6 +165,7 @@ export const units: Unit[] = [
       {
         id: 2,
         name: "Heal",
+        imgUrl: ability10,
         condition: { type: "Activation", cost: 3 },
         rarity: {
           type: "Common"
@@ -159,6 +176,7 @@ export const units: Unit[] = [
       {
         id: 3,
         name: "Water Punch",
+        imgUrl: ability2,
         condition: { type: "Activation", cost: 4 },
         rarity: {
           type: "Common"
@@ -169,6 +187,7 @@ export const units: Unit[] = [
       {
         id: 5,
         name: "Fire Resist",
+        imgUrl: ability6,
         condition: { type: "TakeDamage" },
         rarity: {
           type: "Common"
@@ -191,6 +210,7 @@ export const units: Unit[] = [
       {
         id: 12,
         name: "Bleeding",
+        imgUrl: ability12,
         condition: { type: "Activation", cost: 7 },
         rarity: {
           type: "Rare"
@@ -201,6 +221,7 @@ export const units: Unit[] = [
       {
         id: 7,
         name: "Earth Resist",
+        imgUrl: ability8,
         condition: { type: "TakeDamage" },
         rarity: {
           type: "Common"
@@ -211,6 +232,7 @@ export const units: Unit[] = [
       {
         id: 8,
         name: "Posion Punch",
+        imgUrl: ability5,
         condition: { type: "Activation", cost: 6 },
         rarity: {
           type: "Common"
@@ -233,6 +255,7 @@ export const units: Unit[] = [
       {
         id: 11,
         name: "AutoHeal",
+        imgUrl: ability11,
         condition: { type: "EndTurn" },
         rarity: {
           type: "Rare"
@@ -243,6 +266,7 @@ export const units: Unit[] = [
       {
         id: 9,
         name: "Vampirism",
+        imgUrl: ability12,
         condition: { type: "Activation", cost: 9 },
         rarity: {
           type: "Mythical"
@@ -253,6 +277,7 @@ export const units: Unit[] = [
       {
         id: 4,
         name: "Earth Punch",
+        imgUrl: ability3,
         condition: { type: "Activation", cost: 7 },
         rarity: {
           type: "Rare"
@@ -275,6 +300,7 @@ export const units: Unit[] = [
       {
         id: 1,
         name: "Fire Punch",
+        imgUrl: ability1,
         condition: { type: "Activation", cost: 2 },
         rarity: {
           type: "Common"
@@ -285,6 +311,7 @@ export const units: Unit[] = [
       {
         id: 6,
         name: "Water Resist",
+        imgUrl: ability7,
         condition: { type: "TakeDamage" },
         rarity: {
           type: "Common"
@@ -295,6 +322,7 @@ export const units: Unit[] = [
       {
         id: 10,
         name: "Stun Punch",
+        imgUrl: ability4,
         condition: { type: "Activation", cost: 12 },
         rarity: {
           type: "Common"
@@ -317,6 +345,7 @@ export const units: Unit[] = [
       {
         id: 2,
         name: "Heal",
+        imgUrl: ability10,
         condition: { type: "Activation", cost: 3 },
         rarity: {
           type: "Common"
@@ -327,6 +356,7 @@ export const units: Unit[] = [
       {
         id: 3,
         name: "Water Punch",
+        imgUrl: ability2,
         condition: { type: "Activation", cost: 4 },
         rarity: {
           type: "Common"
@@ -337,6 +367,7 @@ export const units: Unit[] = [
       {
         id: 5,
         name: "Fire Resist",
+        imgUrl: ability6,
         condition: { type: "TakeDamage" },
         rarity: {
           type: "Common"
@@ -359,6 +390,7 @@ export const units: Unit[] = [
       {
         id: 12,
         name: "Bleeding",
+        imgUrl: ability12,
         condition: { type: "Activation", cost: 7 },
         rarity: {
           type: "Rare"
@@ -369,6 +401,7 @@ export const units: Unit[] = [
       {
         id: 7,
         name: "Earth Resist",
+        imgUrl: ability9,
         condition: { type: "TakeDamage" },
         rarity: {
           type: "Common"
@@ -379,6 +412,7 @@ export const units: Unit[] = [
       {
         id: 8,
         name: "Posion Punch",
+        imgUrl: ability5,
         condition: { type: "Activation", cost: 6 },
         rarity: {
           type: "Common"
@@ -401,6 +435,7 @@ export const units: Unit[] = [
       {
         id: 11,
         name: "AutoHeal",
+        imgUrl: ability11,
         condition: { type: "EndTurn" },
         rarity: {
           type: "Rare"
@@ -411,6 +446,7 @@ export const units: Unit[] = [
       {
         id: 9,
         name: "Vampirism",
+        imgUrl: ability12,
         condition: { type: "Activation", cost: 9 },
         rarity: {
           type: "Mythical"
@@ -421,6 +457,7 @@ export const units: Unit[] = [
       {
         id: 4,
         name: "Earth Punch",
+        imgUrl: ability3,
         condition: { type: "Activation", cost: 7 },
         rarity: {
           type: "Rare"
