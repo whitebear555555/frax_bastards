@@ -2,6 +2,8 @@
   box-sizing: border-box;
   padding: 0;
   margin: 0;
+
+  max-width: 1080px;
 }
 
 /* body { */
@@ -16,6 +18,249 @@
 /*   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", */
 /*     monospace; */
 /* } */
+.TopBackground{
+  width: 100vw;
+  height: 45vh;
+
+}
+.TopSide{
+  width: 100vw;
+  height: 45vh;
+  position: relative;
+}
+.EnemyUnitContainer{
+  position: absolute;
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: center;
+  /*left: 0; */
+  /*right: 0; */
+  /*margin-left: auto; */
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%,-50%);
+  width: 100vw;
+  height: 45vh;
+}
+.EnemyUnit{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.EnemyUnit .UnitStatus{
+  color:white;
+}
+.EnemyUnitSpiderImg{
+  width: 34vw;
+  max-width: 300px;
+  height: 20vh;
+}
+.EnemyUnitKnightImg{
+  width: 20vw;
+  height: 32vh;
+}
+.BottomSide{
+  width: 100vw;
+  height: 45vh;
+}
+.PlayerUnitContainer{
+  display: flex;
+  flex-flow: row nowrap;
+  width: 100vw;
+  height: 30vh;
+  gap:0;
+}
+.PlayerUnit{
+  /*display: flex;*/
+  /*margin: 0, 0, 0, 0;*/
+  /*top: 0;*/
+  /*left: 0;*/
+  flex-grow: 1;
+  position: relative;
+  top: 0;
+  left: 0;
+
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  justify-content: center;
+}
+.PlayerUnit .Name{
+  position: absolute;
+  top: 1vh;
+  right: 2vw;
+  color: white;
+  left: 50%;
+  top: 6%;
+  transform: translate(-50%,-50%);
+}
+.PlayerUnit .HP{
+  position: absolute;
+  top: 2vh;
+  right: 2vw;
+  color: red;
+}
+.PlayerUnit .MP{
+  position: absolute;
+  top: 6vh;
+  right: 2vw;
+  color: white;
+}
+.UnitPortraitBack{
+  /*position: absolute;*/
+  /*bottom: 0;*/
+  /*width: 20vw;*/
+  /*height: 30vh;*/
+  width: 100%;
+  height: 100%;
+
+}
+.UnitPortraitImg{
+  position: absolute;
+  bottom: 0;
+  /*width: 19vw;*/
+  /*height: 20vh;*/
+
+  width: 97%;
+  height: 68%;
+}
+.Actions{
+  height: 20vh;
+  background-color: rgb(138, 138, 138);
+  width: 100vw;
+  display: flex;
+  flex-flow: row nowrap;
+
+}
+.Actions .m{
+  display: flex;
+  flex-flow: column nowrap;
+  flex-grow: 1;
+  align-items: center;
+}
+
+.Actions img{
+
+  width: 60%;
+  height: 60%;
+}
+.Actions .p{
+}
+.NavBar{
+  //visibility: hidden;
+  position: absolute;
+  bottom:0;
+  width: 100vw;
+  height: 10vh;
+  display: flex;
+  gap: 25vw;
+  align-items: center;
+  justify-content: center;
+  color: black;
+  background-color: black;
+  border-color: white;
+}
+.NavBarButton{
+  color: black;
+  background-color: black;
+  border: none;
+  width: 5vw;
+  height: 5vh;
+}
+.NavBarButtonImg{
+  width: 5vw;
+  height: 5vh;
+}
+
+
+.TaskContainer{
+  display: flex;
+  flex-direction: column;
+  width: 95vw;
+  margin-left: 5vw;
+}
+.Task{
+  background-color: rgb(50, 50, 50);
+  color: white;
+  height: 10vh;
+  display: flex;
+  align-items: center;
+  margin-bottom: 1vh;
+  gap: 5vw;
+  border-radius: 10% / 50% 0 0 50% ;
+}
+.Task img{
+  height: 5vh;
+  margin: 0 0 0 5vw;
+}
+/*.Task:nth-child(-n+2){*/
+.Taskh{
+  background-color: rgb(138, 138, 138);
+}
+.TaskContainer h2{
+  color: white;
+  text-align: center;
+}
+.Friend{
+  background-color: rgb(138, 138, 138);
+  color: white;
+  height: 10vh;
+  display: flex;
+  align-items: center;
+  margin-bottom: 1vh;
+  gap: 5vw;
+  border-radius: 10% / 50% 0 0 50% ;
+}
+.Friend img{
+  height: 7vh;
+  margin: 0 0 0 5vw;
+}
+.FriendsContainer{
+  display: flex;
+  flex-direction: column;
+  width: 95vw;
+  margin-left: 5vw;
+}
+.FriendsContainer h2{
+  color: white;
+  text-align: center;
+}
+.FriendsContainer p {
+  color: white;
+  text-align: center;
+}
+.MenuContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.MenuContainer h2{
+  color: white;
+  text-align: center;
+
+}
+.MenuContainer p {
+  color: white;
+  text-align: center;
+}
+.MenuContainer img {
+  height: 90%;
+  width: 90%;
+
+}
+.MenuContainerLink {
+  position: absolute;
+  display: block;
+  background-color: white;
+  color: black;
+  height: 10vh;
+  width: 80vw;
+  text-align: center;
+  bottom:30vw;
+}
 
 ul {
   list-style-type: none;
@@ -57,16 +302,16 @@ li a:hover:not(.active) {
 }
 
 .App {
-  text-align: center;
   background-color: black;
 
   min-height: 100vh;
   min-width: 100vw;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+  /*align-items: center;*/
+  /*justify-content: center;*/
+  /*text-align: center;*/
+  /*font-size: calc(10px + 2vmin);*/
 }
 
 .Space {

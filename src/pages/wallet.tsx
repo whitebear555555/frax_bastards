@@ -2,6 +2,7 @@ import { createWalletClient, http } from 'viem'
 import { mnemonicToAccount } from 'viem/accounts'
 import { mainnet } from 'viem/chains'
 import { english, generateMnemonic } from 'viem/accounts'
+import { Chain, base, fraxtal } from 'wagmi/chains'
 
 
 
@@ -11,7 +12,7 @@ export default function Wallet() {
 
   const client = createWalletClient({
     account,
-    chain: mainnet,
+    chain: fraxtal as Chain,
     transport: http()
   })
 
@@ -33,15 +34,13 @@ export default function Wallet() {
   });
   return (
     <>
-      <button className='Item' onClick={simulation}>
-        <p> Create Wallet
-          {mnemonic}
-        </p>
+      <button className='' onClick={simulation}>
+        Create Wallet
       </button >
       < p className='ItemDesc' >
-        {mnemonic} </p >
+        {mnemonic}
+      </p>
     </>
   )
 }
 
-//let rpc_url = "https://fraxtal.gateway.tenderly.co/1rDvVkHQLKzd0gmMpNiXQX".parse()?;

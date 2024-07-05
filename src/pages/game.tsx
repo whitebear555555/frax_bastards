@@ -1,8 +1,9 @@
+
 export type ActionTrait = {
   "player_id": number;
   "unit_id": number;
   "trait_id": number;
-  "targets": number[];
+  "targets": number;
 }
 export type ActionItem = {
   "player_id": number;
@@ -71,7 +72,7 @@ export type Effect = ({
   "min": number;
   "max": number;
 } | {
-  type: "Def"
+  type: "Bleeding"
   "color": Color;
   "min": number;
   "max": number;
@@ -189,13 +190,13 @@ export const units: Unit[] = [
     traits: [
       {
         id: 12,
-        name: "Def",
+        name: "Bleeding",
         condition: { type: "Activation", cost: 7 },
         rarity: {
           type: "Rare"
         },
         target: { type: "Aliade" },
-        effect: { type: "Def", color: { type: "Green" }, min: 1, max: 5 }
+        effect: { type: "Bleeding", color: { type: "Green" }, min: 1, max: 5 }
       },
       {
         id: 7,
@@ -357,13 +358,13 @@ export const units: Unit[] = [
     traits: [
       {
         id: 12,
-        name: "Def",
+        name: "Bleeding",
         condition: { type: "Activation", cost: 7 },
         rarity: {
           type: "Rare"
         },
         target: { type: "Aliade" },
-        effect: { type: "Def", color: { type: "Green" }, min: 1, max: 5 }
+        effect: { type: "Bleeding", color: { type: "Green" }, min: 1, max: 5 }
       },
       {
         id: 7,
@@ -548,12 +549,12 @@ const traits = [
   },
   {
     id: 12,
-    name: "Def",
+    name: "Bleeding",
     condition: { type: "Activation", cost: 7 },
     rarity: {
       type: "Rare"
     },
     target: { type: "Aliade" },
-    effect: { type: "Def", color: { type: "Green" }, min: 1, max: 5 }
+    effect: { type: "Bleeding", color: { type: "Green" }, min: 1, max: 5 }
   },
 ]

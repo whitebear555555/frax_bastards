@@ -1,14 +1,31 @@
+import ability1 from '/assets/ability1.png'
+import ability2 from '/assets/ability2.png'
+import ability3 from '/assets/ability3.png'
+import ability4 from '/assets/ability4.png'
+import ability5 from '/assets/ability5.png'
+import ability6 from '/assets/ability6.png'
+import ability7 from '/assets/ability7.png'
+import ability8 from '/assets/ability8.png'
+import ability9 from '/assets/ability9.png'
+import ability10 from '/assets/ability10.png'
+import ability11 from '/assets/ability11.png'
+import ability12 from '/assets/ability12.png'
 import { Fragment, PropsWithChildren, useState } from 'react'
 import reactLogo from './assets/react.svg'
 import twaLogo from './assets/tapps.png'
 import viteLogo from '/assets/vite.svg'
-import boy1 from '/assets/boy1.png'
-import boy2 from '/assets/boy2.png'
-import boy3 from '/assets/boy3.png'
 import icon1 from '/assets/icon1.png'
 import icon2 from '/assets/icon2.png'
 import icon3 from '/assets/icon3.png'
 import icon4 from '/assets/icon4.png'
+import path_friends from '/assets/path_friends.png'
+import path_tasks from '/assets/path_tasks.png'
+import path_home from '/assets/path_home.png'
+import background from '/assets/background.png'
+import enemy_knight from '/assets/enemy_knight.png'
+import enemy_spider from '/assets/enemy_spider.png'
+import portrait from '/assets/portrait.png'
+import portrait_background from '/assets/portrait_background.png'
 import { motion } from "framer-motion"
 import { createSlice, type PayloadAction, type ThunkAction } from "@reduxjs/toolkit"
 import WebApp from '@twa-dev/sdk'
@@ -20,117 +37,169 @@ import ErrorPage from './pages/erroe-page.tsx'
 import { Link, Outlet, createBrowserRouter } from 'react-router-dom'
 import TaskList from './pages/tasks.tsx'
 import Menu from './pages/menu.tsx'
-import { ActionItem, ActionTrait, Match, units } from './pages/game.tsx'
-import { match } from 'assert'
 import Wallet from './pages/wallet.tsx'
+import FriendsList from './pages/friends.tsx'
+import { endTurn, useItem, useTrait } from './app/store.ts'
 
-function randomInteger(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+function EnemyUnitContainer() {
+  return (
+    <div className='EnemyUnitContainer'>
+      <EnemyUnit type={'EnemyUnitSpiderImg'} imgUrl={enemy_spider} />
+      <EnemyUnit type={'EnemyUnitKnightImg'} imgUrl={enemy_knight} />
+      <EnemyUnit type={'EnemyUnitSpiderImg'} imgUrl={enemy_spider} />
+    </div>
+  )
 }
-const initialState: Match = {
-  players: [
-    {
-      id: 0,
-      name: "JohnBot",
-      items: []
-    },
-    {
-      id: 1,
-      name: "Player",
-      items: []
-    }
-  ],
-  units: units,
-  turnOrder: [
-    [1, 0],
-    [0, 0],
-    [1, 1],
-    [0, 1],
-    [1, 2],
-    [0, 2],
-    [1, 3],
-    [0, 3],
-  ],
-  turn: 0
+function EnemyUnit({ type, imgUrl }: { type: string, imgUrl: string }) {
+  return (<div className='EnemyUnit'>
+    <img
+      src={imgUrl}
+      className={type}
+    // onClick={action}
+    />
+    <p className='UnitStatus'> Spider</p>
+    <p className='UnitStatus'> 10/10</p>
+  </div>)
+}
+// function EnemyUnitContainer() {
+//   return (
+//     <div className='EnemyUnitContainer'>
+//       {
+//         [enemy_spider, enemy_knight, enemy_spider,].map((img, idx) =>
+//           <EnemyUnit key={idx} imgUrl={img} />
+//         )
+//       }
+//     </div>
+//   )
+// }
+// function EnemyUnit({ imgUrl }: { imgUrl: string }) {
+//   return (<>
+//     <img
+//       src={imgUrl}
+//       className=""
+//     // onClick={action}
+//     />
+//   </>)
+// }
+function PlayerUnitContainer() {
+  return (
+    <div className='PlayerUnitContainer'>
+      {
+        [portrait, portrait, portrait, portrait].map((img, idx) =>
+          <PlayerUnit key={idx} imgUrl={img} />
+        )
+      }
+    </div >
+  )
+}
+function PlayerUnit({ imgUrl }: { imgUrl: string }) {
+  return (<div className='PlayerUnit'>
+    <p className='Name'>{"Ivan"}</p>
+    <p className='HP'> 100</p>
+    <p className='MP'> 100</p>
+    <img
+      src={portrait_background}
+      className="UnitPortraitBack"
+    // onClick={action}
+    />
+    <img
+      src={imgUrl}
+      className="UnitPortraitImg"
+    // onClick={action}
+    />
+  </div>)
 }
 
-const counterSlice = createSlice({
-  name: 'Match',
-  initialState,
-  reducers: {
-    useTrait: (state, payload: PayloadAction<ActionTrait>) => {
-      //if have mana
-      const player = state.players[payload.payload.player_id]
-      const unit = state.units[payload.payload.unit_id]
-      const trait = unit.traits[payload.payload.trait_id]
-      if (trait.condition.type == "Activation" && unit.mana >= trait.condition.cost) {
-        switch (trait.effect.type) {
-          case 'Attack':
-            break
-          case 'Resist':
-            break
-          case 'Def':
-            break
-          case 'Heal':
-            unit.healty + randomInteger(trait.effect.min, trait.effect.max)
-            break
-          case 'Vampirism':
-            break
-          case 'Poison':
-            break
-          case 'Stun':
-            break
-          default: break
+type ActionMenu = "main" | "traits" | "items"
+function MainMatch() {
+  const current = useAppSelector((state) => state.match.turnOrder[state.match.turn])
+  const currentPlyer = useAppSelector((state) => state.match.players[state.match.turnOrder[state.match.turn][0]])
+  const currentUnit = useAppSelector((state) => state.match.units[state.match.turnOrder[state.match.turn][1]])
+  const dispatch = useAppDispatch()
+  return (<>
+    <div className='TopSide'>
+      <EnemyUnitContainer />
+      <img
+        src={background}
+        className="TopBackground"
+      // onClick={action}
+      />
+    </div>
+    <div className='BottomSide'>
+      <PlayerUnitContainer />
+      <div className='Actions'>
+        <button className='m' onClick={() => {
+          if (current[0] == 1) {
+            dispatch(useTrait({
+              player_id: current[0],
+              unit_id: current[1],
+              trait_id: 0,
+              targets: 0,
+            }))
+          }
+        }}><p>{currentUnit.traits[0].name}</p><img
+            src={'/assets/ability' + currentUnit.traits[0].id + '.png'}
+            className=""
+          // onClick={action}
+          /></button>
+        <button className='m' onClick={() => {
+          if (current[0] == 1) {
+            dispatch(useTrait({
+              player_id: current[0],
+              unit_id: current[1],
+              trait_id: 0,
+              targets: 0,
+            }))
+          }
+        }}><p>{currentUnit.traits[1].name}</p><img
+            src={'/assets/ability' + currentUnit.traits[1].id + '.png'}
+            className=""
+          // onClick={action}
+          /></button>
+        <button className='m' onClick={() => {
+          if (current[0] == 1) {
+            dispatch(useTrait({
+              player_id: current[0],
+              unit_id: current[1],
+              trait_id: 0,
+              targets: 0,
+            }))
+          }
+        }}><p>{currentUnit.traits[2].name}</p><img
+            src={'/assets/ability' + currentUnit.traits[2].id + '.png'}
+            className=""
+          // onClick={action}
+          /></button>
+        <button className='m' onClick={() => dispatch(endTurn())}> <p>end</p></button>
+      </div>
+    </div >
 
-        }
-      }
-      //check win
-      //endTurn
-    },
-    useItem: (state, payload: PayloadAction<ActionItem>) => {
-      //check win
-      //endTurn
-    },
-    endTurn: (state) => {
-      state.turn += 1;
-      if (state.turn == state.turnOrder.length) {
-        state.turn = 0;
-      }
-      //end_turn check trait and status
-      //end_turn(m);
-      //next_turn check trait and status
-      //bot ther
-      const l = state.turnOrder[state.turn]
-      if (l[0] == 0) {
-        //bot
-      } else {
-        //player
-      }
-    },
-    // // Use the PayloadAction type to declare the contents of `action.payload`
-    // incrementByAmount: (state, action: PayloadAction<number>) => {
-    //   state.value += action.payload
-    // },
-  },
-})
-
-// export const { } = counterSlice.actions
-// const selectCount = (state: RootState) => state.counter.value
-// counterSlice.reducer
-
-
+  </>)
+}
 function Root() {
-  // const [count, setCount] = useState(match)var message = AwesomeMessage.create({ awesomeField: "AwesomeString" });
+
+  // const [count, setCount] = useState(match)var message = AwesomeMessage.create({awesomeField: "AwesomeString" });
+  //const [actionMenu, setActionMenu] = useState<ActionMenu>("main")
   return (
     <>
       <div className="App">
-        <ul>
-          <li><Link to={`tasks`}>Tasks</Link></li>
-          <li><Link to={`/menu`}>Home</Link></li>
-          <li><Link to={`wallet`}>Friends</Link></li>
-        </ul>
         <Outlet />
-      </div>
+        <div className='NavBar'>
+          {
+            [[path_tasks, 'tasks'], [path_home, 'menu'], [path_friends, 'friends']].map((img, idx) =>
+              <Link
+                className='NavBarButton' key={idx}
+                to={img[1]}>
+                <img
+                  src={img[0]}
+                  className="NavBarButtonImg"
+                //onClick={action}
+                />
+              </Link>
+            )
+          }
+        </div>
+      </div >
     </>
   )
 }
@@ -145,12 +214,20 @@ const router = createBrowserRouter([
         element: <Menu />,
       },
       {
+        path: "match",
+        element: <MainMatch />,
+      },
+      {
         path: "tasks",
         element: <TaskList />,
       },
       {
         path: "wallet",
         element: <Wallet />,
+      },
+      {
+        path: "friends",
+        element: <FriendsList />,
       },
     ],
   },
