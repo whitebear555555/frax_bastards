@@ -141,7 +141,7 @@ function MainMatch() {
             }))
           }
         }}><p>{currentUnit.traits[1].name}</p><img
-            src={currentUnit.traits[0].imgUrl}
+            src={currentUnit.traits[1].imgUrl}
             className=""
           // onClick={action}
           /></button>
@@ -155,7 +155,7 @@ function MainMatch() {
             }))
           }
         }}><p>{currentUnit.traits[2].name}</p><img
-            src={currentUnit.traits[0].imgUrl}
+            src={currentUnit.traits[2].imgUrl}
             className=""
           // onClick={action}
           /></button>
