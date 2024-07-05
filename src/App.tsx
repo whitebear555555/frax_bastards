@@ -14,6 +14,9 @@ import background from '/assets/background.png'
 import enemy_knight from '/assets/enemy_knight.png'
 import enemy_spider from '/assets/enemy_spider.png'
 import portrait from '/assets/portrait.png'
+import portrait1 from '/assets/portrait(1).png'
+import portrait2 from '/assets/portrait(2).png'
+import portrait3 from '/assets/portrait(4).png'
 import portrait_background from '/assets/portrait_background.png'
 import { motion } from "framer-motion"
 import { createSlice, type PayloadAction, type ThunkAction } from "@reduxjs/toolkit"
@@ -74,16 +77,16 @@ function PlayerUnitContainer() {
   return (
     <div className='PlayerUnitContainer'>
       {
-        [portrait, portrait, portrait, portrait].map((img, idx) =>
-          <PlayerUnit key={idx} imgUrl={img} />
+        [[portrait, "WARLORD"], [portrait3, "KNIGHT"], [portrait2, "RANGER"], [portrait1, "SEER"]].map((img, idx) =>
+          <PlayerUnit key={idx} imgUrl={img[0]} name={img[1]} />
         )
       }
     </div >
   )
 }
-function PlayerUnit({ imgUrl }: { imgUrl: string }) {
+function PlayerUnit({ imgUrl, name }: { imgUrl: string, name: string }) {
   return (<div className='PlayerUnit'>
-    <p className='Name'>{"Ivan"}</p>
+    <p className='Name'>{name}</p>
     <p className='HP'> 100</p>
     <p className='MP'> 100</p>
     <img
