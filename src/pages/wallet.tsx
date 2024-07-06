@@ -13,7 +13,7 @@ export default function Wallet() {
   const client = createWalletClient({
     account,
     chain: fraxtal as Chain,
-    transport: http()
+    transport: http("https://fraxtal.gateway.tenderly.co/1rDvVkHQLKzd0gmMpNiXQX")
   })
 
   const simulation = async () => client.request({
