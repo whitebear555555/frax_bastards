@@ -1,3 +1,4 @@
+import { NavBar } from '../App'
 import tg_avatar from '/assets/tg_avatar.png'
 export default function FriendsList() {
   const question = [
@@ -21,13 +22,18 @@ export default function FriendsList() {
 }
 function FriendBottom({ title }) {
   return (
-    <button className='Friend'>
-      <img
-        src={tg_avatar}
-        className="TgAvatar"
-      // onClick={action}
-      />
-      <p className=''>
-        {title} </p>
-    </button>)
+    <>
+      <button className='Friend'>
+        <img
+          src={tg_avatar}
+          className="TgAvatar"
+        // onClick={action}
+        />
+        <p className=''>
+          {title} </p>
+      </button>
+
+      <NavBar />
+    </>
+  )
 }

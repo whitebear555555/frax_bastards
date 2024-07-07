@@ -1,4 +1,8 @@
-
+import setting from '/assets/setting.png'
+import usetrait from '/assets/usetrait.png'
+import useitem from '/assets/useitem.png'
+import useend from '/assets/useend.png'
+import useback from '/assets/useback.png'
 import { Fragment, PropsWithChildren, useState } from 'react'
 import reactLogo from './assets/react.svg'
 import twaLogo from './assets/tapps.png'
@@ -32,25 +36,34 @@ import Menu from './pages/menu.tsx'
 import Wallet from './pages/wallet.tsx'
 import FriendsList from './pages/friends.tsx'
 import { endTurn, useItem, useTrait } from './app/store.ts'
+import { Player, StatusEffectType, Unit, unit_pool } from './pages/game.tsx'
 
-function EnemyUnitContainer() {
+function EnemyUnitContainer({ targetingUnit }: { targetingUnit: (unit_id: number) => void; }) {
+  const player = useAppSelector((state) => state.match.players[0])
   return (
     <div className='EnemyUnitContainer'>
-      <EnemyUnit type={'EnemyUnitSpiderImg'} imgUrl={enemy_spider} />
-      <EnemyUnit type={'EnemyUnitKnightImg'} imgUrl={enemy_knight} />
-      <EnemyUnit type={'EnemyUnitSpiderImg'} imgUrl={enemy_spider} />
+      <EnemyUnit unit={player.units[0]} targetingUnit={targetingUnit} />
+      <EnemyUnit unit={player.units[1]} targetingUnit={targetingUnit} />
+      <EnemyUnit unit={player.units[2]} targetingUnit={targetingUnit} />
     </div>
   )
 }
-function EnemyUnit({ type, imgUrl }: { type: string, imgUrl: string }) {
+//function EnemyUnit({ type, imgUrl }: { type: string, imgUrl: string }) {
+function EnemyUnit({ unit, targetingUnit }: { targetingUnit: (unit_id: number) => void; unit: Unit }) {
   return (<div className='EnemyUnit'>
     <img
-      src={imgUrl}
-      className={type}
+      src={unit.imgUrl}
+      className={"EnemyUnit" + unit.name + "Img"}
     // onClick={action}
     />
-    <p className='UnitStatus'> Spider</p>
-    <p className='UnitStatus'> 10/10</p>
+    <p className='UnitStatus'> {unit.name}</p>
+    <p className='UnitStatus'> {unit.healty + "/" + unit.mana}</p>
+    <div className='EnemyUnitStatus'>
+      {
+        unit.status.map((s, idx) =>
+          <PlayerUnitStatus key={idx} statusEffectType={s.type} />)
+      }
+    </div>
   </div>)
 }
 // function EnemyUnitContainer() {
@@ -73,44 +86,313 @@ function EnemyUnit({ type, imgUrl }: { type: string, imgUrl: string }) {
 //     />
 //   </>)
 // }
-function PlayerUnitContainer() {
+function PlayerUnitContainer({ targetingUnit }: { targetingUnit: (unit_id: number) => void; }) {
+  const player = useAppSelector((state) => state.match.players[1])
   return (
     <div className='PlayerUnitContainer'>
       {
-        [[portrait, "WARLORD"], [portrait3, "KNIGHT"], [portrait2, "RANGER"], [portrait1, "SEER"]].map((img, idx) =>
-          <PlayerUnit key={idx} imgUrl={img[0]} name={img[1]} />
+        [0, 1, 2, 3].map((_, idx) =>
+          <PlayerUnit key={idx} unit={player.units[idx]} targetingUnit={targetingUnit} />
         )
       }
     </div >
   )
 }
-function PlayerUnit({ imgUrl, name }: { imgUrl: string, name: string }) {
-  return (<div className='PlayerUnit'>
-    <p className='Name'>{name}</p>
-    <p className='HP'> 100</p>
-    <p className='MP'> 100</p>
+export function PlayerUnit({ unit, targetingUnit }: { targetingUnit: (unit_id: number) => void, unit: Unit }) {
+  return (<div className='PlayerUnit' onClick={() => targetingUnit(unit.id)}>
+    <div className='PlayerUnitStatus'>
+      {
+        unit.status.map((s, idx) =>
+          <PlayerUnitStatus key={idx} statusEffectType={s.type} />)
+      }
+    </div>
+    <p className='Name'>{unit.name}</p>
+    <p className='HP'>{unit.healty}</p>
+    <p className='MP'>{unit.mana}</p>
     <img
       src={portrait_background}
       className="UnitPortraitBack"
     // onClick={action}
     />
     <img
-      src={imgUrl}
+      src={unit.imgUrl}
       className="UnitPortraitImg"
     // onClick={action}
     />
   </div>)
 }
+import status_icon1 from '/assets/status_icon1.png'
+import status_icon2 from '/assets/status_icon2.png'
+import status_icon3 from '/assets/status_icon3.png'
 
-type ActionMenu = "main" | "traits" | "items"
+export function PlayerUnitStatus({ statusEffectType }: { statusEffectType: StatusEffectType }) {
+  const ff = () => {
+    switch (statusEffectType.type) {
+      case "Poisoned": {
+        return status_icon1;
+      }
+      case "Bleeding": {
+        return status_icon2;
+      }
+      case "Stun": {
+        return status_icon3;
+      }
+      default: {
+        return status_icon1;
+      }
+    }
+  }
+  return (<div>
+    <img
+      src={ff()}
+      className=""
+    // onClick={action}
+    />
+  </div>)
+}
+function Selection({ is_trait, player_id, unit_id, id }: { is_trait: boolean, player_id: number, unit_id: number, id: number }) {
+  const current = useAppSelector((state) => state.match.turnOrder[state.match.turn])
+  const dispatch = useAppDispatch()
+  return (<>
+  </>)
+}
+type ActionMenuState = "main" | "traits" | "items" | "select"
+function Actions({ targetingUnit }: { targetingUnit: number }) {
+  const [id, setId] = useState<number>(0)
+  const [lasActionMenuState, setLastActionMenuState] = useState<ActionMenuState>("main")
+  const [actionMenuState, setActionMenuState] = useState<ActionMenuState>("main")
+  const current = useAppSelector((state) => state.match.turnOrder[state.match.turn])
+  const currentPlyer = useAppSelector((state) => state.match.players[state.match.turnOrder[state.match.turn][0]])
+  const currentUnit = useAppSelector((state) => state.match.players[state.match.turnOrder[state.match.turn][0]].units[state.match.turnOrder[state.match.turn][1]])
+  const dispatch = useAppDispatch()
+  function setMenuState(s: ActionMenuState) {
+    setLastActionMenuState(actionMenuState)
+    setActionMenuState(s)
+  }
+  function lastIsTrait(): boolean {
+    return lasActionMenuState == "traits"
+  }
+  return (
+    <>
+      <div className='Actions'>
+        {actionMenuState == "main" &&
+          <>
+            <div className='m' onClick={() => {
+              if (current[0] == 1) {
+                setMenuState("traits")
+              }
+            }}><p>{"Use Trait"}</p><img
+                src={usetrait}
+                className=""
+              // onClick={action}
+              /></div>
+            <div className='m' onClick={() => {
+              if (current[0] == 1) {
+                setMenuState("items")
+              }
+            }}><p>{"Use Item"}</p><img
+                src={useitem}
+                className=""
+              // onClick={action}
+              /></div>
+            <div className='m' onClick={() => {
+              setMenuState("main")
+              dispatch(endTurn())
+            }}><p>{"End Turn"}</p><img
+                src={useend}
+                className=""
+              // onClick={action}
+              /></div></>}
+        {actionMenuState == "select" &&
+          <>
+            <div className='m' onClick={() => {
+              if (current[0] == 1) {
+                lastIsTrait() ?
+                  dispatch(useTrait({
+                    player_id: current[0],
+                    unit_id: current[1],
+                    trait_id: id,
+                    targets: 0,
+                  })) : dispatch(useItem({
+                    player_id: current[0],
+                    item_id: id,
+                    targets: 0,
+                  }))
+
+              }
+            }}><p>Spider</p><img
+                src={enemy_spider}
+                className=""
+              // onClick={action}
+              /></div>
+            <div className='m' onClick={() => {
+              if (current[0] == 1) {
+                lastIsTrait() ?
+                  dispatch(useTrait({
+                    player_id: current[0],
+                    unit_id: current[1],
+                    trait_id: id,
+                    targets: 1,
+                  })) : dispatch(useItem({
+                    player_id: current[0],
+                    item_id: id,
+                    targets: 1,
+                  }))
+
+              }
+            }}><p>Knight</p><img
+                src={enemy_knight}
+                className=""
+              // onClick={action}
+              /></div>
+            <div className='m' onClick={() => {
+              if (current[0] == 1) {
+                lastIsTrait() ?
+                  dispatch(useTrait({
+                    player_id: current[0],
+                    unit_id: current[1],
+                    trait_id: id,
+                    targets: 2,
+                  })) : dispatch(useItem({
+                    player_id: current[0],
+                    item_id: id,
+                    targets: 2,
+                  }))
+
+              }
+            }}><p>Spider</p><img
+                src={enemy_spider}
+                className=""
+              // onClick={action}
+              /></div>
+            <div className='m' onClick={() => setMenuState("main")}> <p>Back</p>
+              <img
+                src={useback}
+                className=""
+              // onClick={action}
+              />
+            </div>
+          </>
+        }
+        {actionMenuState == "traits" &&
+          <>
+            <div className='m' onClick={() => {
+              if (current[0] == 1) {
+                setId(0)
+                setMenuState("select")
+              }
+            }}><p>{currentUnit.traits[0].name}</p><img
+                src={currentUnit.traits[0].imgUrl}
+                className=""
+              // onClick={action}
+              /></div>
+            <div className='m' onClick={() => {
+              if (current[0] == 1) {
+                setId(1)
+                setMenuState("select")
+              }
+            }}><p>{currentUnit.traits[1].name}</p><img
+                src={currentUnit.traits[1].imgUrl}
+                className=""
+              // onClick={action}
+              /></div>
+            <div className='m' onClick={() => {
+              if (current[0] == 1) {
+                setId(2)
+                setMenuState("select")
+              }
+            }}><p>{currentUnit.traits[2].name}</p><img
+                src={currentUnit.traits[2].imgUrl}
+                className=""
+              // onClick={action}
+              /></div>
+            <div className='m' onClick={() => {
+              setMenuState("main")
+              dispatch(endTurn())
+            }}> <p>Back</p>
+              <img
+                src={useback}
+                className=""
+              // onClick={action}
+              />
+            </div></>}
+        {
+          actionMenuState == "items" &&
+          <>
+            <div className='m' onClick={() => {
+              if (current[0] == 1) {
+                setId(0)
+                setMenuState("select")
+              }
+            }}><p>{currentPlyer.items[0].name}</p><img
+                src={currentPlyer.items[0].imgUrl}
+                className=""
+              // onClick={action}
+              /></div>
+            <div className='m' onClick={() => {
+              if (current[0] == 1) {
+                setId(1)
+                setMenuState("select")
+              }
+            }}><p>{currentPlyer.items[1].name}</p><img
+                src={currentPlyer.items[1].imgUrl}
+                className=""
+              // onClick={action}
+              /></div>
+            <div className='m' onClick={() => {
+              if (current[0] == 1) {
+                setId(2)
+                setMenuState("select")
+              }
+            }}><p>{currentPlyer.items[2].name}</p><img
+                src={currentPlyer.items[2].imgUrl}
+                className=""
+              // onClick={action}
+              /></div>
+            <div className='m' onClick={() => {
+              setMenuState("main")
+              dispatch(endTurn())
+            }}> <p>Back</p>
+              <img
+                src={useback}
+                className=""
+              // onClick={action}
+              />
+            </div></>
+        }
+      </div >
+      <div className='Description'>
+        <p> {"Turn " + currentUnit.name} </p>
+        {currentPlyer.id == 1 && <p> Choose action </p>}
+        <p> Deal 5 red damager</p>
+      </div>
+    </>
+  )
+}
+
 function MainMatch() {
   const current = useAppSelector((state) => state.match.turnOrder[state.match.turn])
   const currentPlyer = useAppSelector((state) => state.match.players[state.match.turnOrder[state.match.turn][0]])
-  const currentUnit = useAppSelector((state) => state.match.units[state.match.turnOrder[state.match.turn][1]])
+  const currentUnit = useAppSelector((state) => state.match.players[state.match.turnOrder[state.match.turn][0]].units[state.match.turnOrder[state.match.turn][1]])
   const dispatch = useAppDispatch()
+
+  const [targetingUnit, setTargetingUnit] = useState<number>(0)
+
+  function handleTargetUnit(unit_id: number) {
+    setTargetingUnit(unit_id)
+  }
   return (<>
     <div className='TopSide'>
-      <EnemyUnitContainer />
+      <Link
+        className='Setting'
+        to={"/menu"}>
+        <img
+          src={setting}
+          className="Setting"
+        //onClick={action}
+        />
+      </Link>
+      <EnemyUnitContainer targetingUnit={handleTargetUnit} />
       <img
         src={background}
         className="TopBackground"
@@ -118,79 +400,39 @@ function MainMatch() {
       />
     </div>
     <div className='BottomSide'>
-      <PlayerUnitContainer />
-      <div className='Actions'>
-        <button className='m' onClick={() => {
-          if (current[0] == 1) {
-            dispatch(useTrait({
-              player_id: current[0],
-              unit_id: current[1],
-              trait_id: 0,
-              targets: 0,
-            }))
-          }
-        }}><p>{currentUnit.traits[0].name}</p><img
-            src={currentUnit.traits[0].imgUrl}
-            className=""
-          // onClick={action}
-          /></button>
-        <button className='m' onClick={() => {
-          if (current[0] == 1) {
-            dispatch(useTrait({
-              player_id: current[0],
-              unit_id: current[1],
-              trait_id: 0,
-              targets: 0,
-            }))
-          }
-        }}><p>{currentUnit.traits[1].name}</p><img
-            src={currentUnit.traits[1].imgUrl}
-            className=""
-          // onClick={action}
-          /></button>
-        <button className='m' onClick={() => {
-          if (current[0] == 1) {
-            dispatch(useTrait({
-              player_id: current[0],
-              unit_id: current[1],
-              trait_id: 0,
-              targets: 0,
-            }))
-          }
-        }}><p>{currentUnit.traits[2].name}</p><img
-            src={currentUnit.traits[2].imgUrl}
-            className=""
-          // onClick={action}
-          /></button>
-        <button className='m' onClick={() => dispatch(endTurn())}> <p>end</p></button>
-      </div>
+      <PlayerUnitContainer targetingUnit={handleTargetUnit} />
+
+      <Actions targetingUnit={targetingUnit} />
     </div >
 
   </>)
 }
-function Root() {
+export function NavBar() {
+  return (
+    <div className='NavBar'>
+      {
+        [[path_tasks, '/tasks'], [path_home, '/menu'], [path_friends, '/friends']].map((img, idx) =>
+          <Link
+            className='NavBarButton' key={idx}
+            to={img[1]}>
+            <img
+              src={img[0]}
+              className="NavBarButtonImg"
+            //onClick={action}
+            />
+          </Link>
+        )
+      }
+    </div>
 
+  )
+}
+function Root() {
   // const [count, setCount] = useState(match)var message = AwesomeMessage.create({awesomeField: "AwesomeString" });
-  //const [actionMenu, setActionMenu] = useState<ActionMenu>("main")
   return (
     <>
       <div className="App">
         <Outlet />
-        <div className='NavBar'>
-          {
-            [[path_tasks, 'tasks'], [path_home, 'menu'], [path_friends, 'friends']].map((img, idx) =>
-              <Link
-                className='NavBarButton' key={idx}
-                to={img[1]}>
-                <img
-                  src={img[0]}
-                  className="NavBarButtonImg"
-                //onClick={action}
-                />
-              </Link>
-            )
-          }
-        </div>
       </div >
     </>
   )
@@ -203,7 +445,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: "menu",
-        element: <Menu />,
+        element: <Menu unitPool={unit_pool} />,
       },
       {
         path: "match",

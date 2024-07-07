@@ -3,7 +3,7 @@
   padding: 0;
   margin: 0;
 
-  max-width: 1080px;
+  max-width: 854px;
 }
 
 /* body { */
@@ -18,14 +18,25 @@
 /*   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", */
 /*     monospace; */
 /* } */
+.Setting{
+  position: absolute;
+  height: 3vh;
+  width: 3vw;
+  z-index: 1;
+  top: 0.5vh;
+  right: 0.5vw;
+  min-width: 30px;
+  min-height: 30px;
+ 
+}
 .TopBackground{
   width: 100vw;
-  height: 45vh;
+  height: 100%;
 
 }
 .TopSide{
   width: 100vw;
-  height: 45vh;
+  height: 48vh;
   position: relative;
 }
 .EnemyUnitContainer{
@@ -41,7 +52,7 @@
   top: 50%;
   transform: translate(-50%,-50%);
   width: 100vw;
-  height: 45vh;
+  height: 100%;
 }
 .EnemyUnit{
   display: flex;
@@ -59,17 +70,33 @@
 }
 .EnemyUnitKnightImg{
   width: 20vw;
+  max-width: 200px;
+  min-width: 100px;
   height: 32vh;
+}
+.EnemyUnitStatus{
+  display: flex;
+  justify-content: flex-start;
+  left: 0.5vw;
+  width: 25vw;
+  max-width: 5vw;
+  max-height: 5vh;
+  min-height: 2vh;
+}
+.EnemyUnitStatus img{
+  max-width: 5vw;
+  max-height: 5vh;
+  min-height: 2vh;
 }
 .BottomSide{
   width: 100vw;
-  height: 45vh;
+  height: 52vh;
 }
 .PlayerUnitContainer{
   display: flex;
   flex-flow: row nowrap;
   width: 100vw;
-  height: 30vh;
+  height: 25vh;
   gap:0;
 }
 .PlayerUnit{
@@ -104,7 +131,7 @@
 }
 .PlayerUnit .MP{
   position: absolute;
-  top: 6vh;
+  top: 5vh;
   right: 2vw;
   color: white;
 }
@@ -126,13 +153,29 @@
   width: 97%;
   height: 68%;
 }
+.PlayerUnitStatus{
+  display: flex;
+  justify-content: flex-start;
+  top: -2vh;
+  left: 0.5vw;
+  position: absolute;
+  width: 25vw;
+  max-width: 5vw;
+  max-height: 5vh;
+  min-height: 2vh;
+}
+.PlayerUnitStatus img{
+  max-width: 5vw;
+  max-height: 5vh;
+  min-height: 2vh;
+}
 .Actions{
-  height: 20vh;
+  height: 17vh;
   background-color: rgb(138, 138, 138);
   width: 100vw;
   display: flex;
   flex-flow: row nowrap;
-
+  min-height: 12vh;
 }
 .Actions .m{
   display: flex;
@@ -142,11 +185,23 @@
 }
 
 .Actions img{
-
   width: 60%;
   height: 60%;
+  min-height: 12vh;
+  max-width: 12vh;
 }
 .Actions .p{
+}
+.Description{
+  height: 10vh;
+  background-color: rgb(138, 138, 138);
+  width: 100vw;
+  color: white;
+  text-align: center;
+  font-size: 2vh;
+  border: 0.5vw solid black;
+
+  vertical-align: text-bottom;
 }
 .NavBar{
   //visibility: hidden;
@@ -168,8 +223,10 @@
   border: none;
   width: 5vw;
   height: 5vh;
+  max-width: 50px;
 }
 .NavBarButtonImg{
+  max-width: 50px;
   width: 5vw;
   height: 5vh;
 }
@@ -261,6 +318,7 @@
   text-align: center;
   bottom:20vw;
 }
+
 
 ul {
   list-style-type: none;

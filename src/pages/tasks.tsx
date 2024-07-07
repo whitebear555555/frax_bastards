@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import tg from '/assets/tg.png'
+import { NavBar } from '../App'
 export default function TaskList() {
   const question = [
     { title: "subscribe twitter", path: "" }, ,
@@ -31,6 +32,8 @@ export default function TaskList() {
           <TaskBottom key={idx} {...item} />
         )
       }
+
+      <NavBar />
     </div >
   )
 }

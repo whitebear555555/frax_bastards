@@ -1,4 +1,5 @@
 
+export type ActionChooseUnit = Unit[]
 export type ActionTrait = {
   "player_id": number;
   "unit_id": number;
@@ -7,25 +8,28 @@ export type ActionTrait = {
 }
 export type ActionItem = {
   "player_id": number;
-  "unit_id": number;
-  "trait_id": number;
-  "targets": number[];
+  "item_id": number;
+  "targets": number;
 }
 export type Match = {
   players: Player[],
-  units: Unit[],
   turnOrder: [number, number][],
   turn: number,
+  initPlayerUnitPool: Unit[],
+  end: boolean,
+  winner: number,
 }
 export type Player = {
   id: number,
   name: string
+  units: Unit[],
   items: Item[]
 }
 export type Unit = {
   player_owner: number,
   id: number;
   name: string;
+  imgUrl: string;
   healty: number;
   mana: number;
   traits: Trait[];
@@ -37,6 +41,7 @@ export type Trait = {
   id: number;
   name: string;
   imgUrl: string;
+  desc: string,
   condition: Condition; //[]
   target: Target;
   effect: Effect;
@@ -45,6 +50,8 @@ export type Trait = {
 export type Item = {
   id: number;
   name: string,
+  imgUrl: string;
+  desc: string,
   condition: Condition;
   target: Target;
   effect: Effect;
@@ -52,6 +59,7 @@ export type Item = {
 };
 export type StatusEffect = {
   name: string,
+  duration: number,
   type: StatusEffectType,
 }
 export type StatusEffectType = ({ type: "Poisoned" } | { type: "Bleeding" } | { type: "Stun" })
@@ -90,7 +98,9 @@ export type Effect = ({
   "min": number;
   "max": number;
 } | {
-  type: "Stun"
+  type: "Stun",
+} | {
+  type: "Dispoisen"
 });
 export type Color = ({ type: "Uncolor" } | { type: "Red" } | { type: "Green" } | { type: "Blue" });
 
@@ -106,21 +116,305 @@ import ability9 from '/assets/ability9.png'
 import ability10 from '/assets/ability10.png'
 import ability11 from '/assets/ability11.png'
 import ability12 from '/assets/ability12.png'
-export const units: Unit[] = [
+import item1 from '/assets/item1.png'
+import item2 from '/assets/item2.png'
+import item3 from '/assets/item3.png'
+import enemy_knight from '/assets/enemy_knight.png'
+import enemy_spider from '/assets/enemy_spider.png'
+import portrait from '/assets/portrait.png'
+import portrait1 from '/assets/portrait(1).png'
+import portrait2 from '/assets/portrait(2).png'
+import portrait3 from '/assets/portrait(4).png'
+import portrait4 from '/assets/portrait(5).png'
+
+export const item_pool: Item[] = [
   {
-    player_owner: 0,
     id: 0,
-    name: "0000",
-    healty: 100,
-    mana: 100,
+    name: "Fire Bomb",
+    imgUrl: item1,
+    desc: "Activate: Deal 2-7 red damage",
+    condition: { type: "Activation", cost: 0 },
+    rarity: {
+      type: "Common"
+    },
+    target: { type: "Enemy" },
+    effect: { type: "Attack", color: { type: "Red" }, min: 2, max: 7 }
+  },
+  {
+    id: 1,
+    name: "Medical Kit",
+    imgUrl: item2,
+    desc: "Activate: Restore 5-10 health points",
+    condition: { type: "Activation", cost: 0 },
+    rarity: {
+      type: "Common"
+    },
+    target: { type: "Self" },
+    effect: { type: "Heal", min: 5, max: 10 }
+  },
+  {
+    id: 2,
+    name: "Antidote",
+    desc: "Activate: Remove poison",
+    imgUrl: item3,
+    condition: { type: "Activation", cost: 0 },
+    rarity: {
+      type: "Common"
+    },
+    target: { type: "Self" },
+    effect: { type: "Dispoisen", }
+  },
+]
+export const enemy_unit_pool: Unit[] = [{
+  player_owner: 0,
+  id: 0,
+  name: "Spider",
+  imgUrl: enemy_spider,
+  healty: 100,
+  mana: 100,
+  traits: [
+    {
+      id: 0,
+      imgUrl: ability1,
+      name: "Fire Punch",
+      desc: "Activate(cost 2): Deal 1-5 red damage",
+      condition: { type: "Activation", cost: 2 },
+      rarity: {
+        type: "Common"
+      },
+      target: { type: "Enemy" },
+      effect: { type: "Attack", color: { type: "Red" }, min: 1, max: 5 }
+    },
+    {
+      id: 1,
+      name: "Water Punch",
+      desc: "Activate (cost 4): Deal 2-4 blue damage",
+      imgUrl: ability2,
+      condition: { type: "Activation", cost: 4 },
+      rarity: {
+        type: "Common"
+      },
+      target: { type: "Enemy" },
+      effect: { type: "Attack", color: { type: "Blue" }, min: 2, max: 4 }
+    },
+    {
+      id: 2,
+      name: "Posion Punch",
+      desc: "Activate (cost 6): Poisons targets",
+      imgUrl: ability5,
+      condition: { type: "Activation", cost: 6 },
+      rarity: {
+        type: "Common"
+      },
+      target: { type: "Enemy" },
+      effect: { type: "Poison", min: 1, max: 3 }
+    },
+    {
+      id: 3,
+      name: "Stun Punch",
+      imgUrl: ability4,
+      desc: "Activate (cost 12): Stuns the target",
+      condition: { type: "Activation", cost: 12 },
+      rarity: {
+        type: "Common"
+      },
+      target: { type: "Enemy" },
+      effect: { type: "Stun" }
+    },
+    {
+      id: 4,
+      name: "Water Resist",
+      desc: "block 3-5 blue damage when taking damage",
+      imgUrl: ability7,
+      condition: { type: "TakeDamage" },
+      rarity: {
+        type: "Common"
+      },
+      target: { type: "Self" },
+      effect: { type: "Resist", color: { type: "Blue" }, min: 3, max: 5 }
+    },
+    {
+      id: 5,
+      name: "Earth Resist",
+      desc: "block 3-6 green damage when taking damage",
+      imgUrl: ability8,
+      condition: { type: "TakeDamage" },
+      rarity: {
+        type: "Common"
+      },
+      target: { type: "Self" },
+      effect: { type: "Resist", color: { type: "Green" }, min: 3, max: 6 }
+    },
+  ],
+  status: [],
+  level: 10,
+  exp: 30,
+}, {
+  player_owner: 0,
+  id: 1,
+  name: "Knight",
+  imgUrl: enemy_knight,
+  healty: 200,
+  mana: 150,
+  traits: [
+    {
+      id: 0,
+      name: "Vampirism",
+      desc: "Activate (cost 9): Drains 1-7 life point from target",
+      imgUrl: ability12,
+      condition: { type: "Activation", cost: 9 },
+      rarity: {
+        type: "Mythical"
+      },
+      target: { type: "All" },
+      effect: { type: "Vampirism", min: 1, max: 7 }
+    },
+    {
+      id: 1,
+      name: "Earth Punch",
+      desc: "Activate (cost 7): Deal 5-10 green damage",
+      imgUrl: ability3,
+      condition: { type: "Activation", cost: 7 },
+      rarity: {
+        type: "Rare"
+      },
+      target: { type: "Enemy" },
+      effect: { type: "Attack", color: { type: "Green" }, min: 5, max: 10 }
+    },
+    {
+      id: 2,
+      name: "Earth Resist",
+      desc: "block 3-6 green damage when taking damage",
+      imgUrl: ability8,
+      condition: { type: "TakeDamage" },
+      rarity: {
+        type: "Common"
+      },
+      target: { type: "Self" },
+      effect: { type: "Resist", color: { type: "Green" }, min: 3, max: 6 }
+    },
+    {
+      id: 3,
+      name: "AutoHeal",
+      desc: "Restore 1-5 health points at end of turn",
+      imgUrl: ability11,
+      condition: { type: "EndTurn" },
+      rarity: {
+        type: "Rare"
+      },
+      target: { type: "Self" },
+      effect: { type: "Heal", min: 1, max: 5 }
+    },
+  ],
+  status: [{ name: "Poison", duration: 3, type: { type: 'Poisoned' } },
+  { name: "Stun", duration: 3, type: { type: 'Stun' } },
+  { name: "Bleeding", duration: 3, type: { type: 'Bleeding' } }
+  ],
+  level: 12,
+  exp: 30,
+}, {
+  player_owner: 0,
+  id: 2,
+  name: "Spider",
+  imgUrl: enemy_spider,
+  healty: 100,
+  mana: 100,
+  traits: [
+    {
+      id: 0,
+      imgUrl: ability1,
+      name: "Fire Punch",
+      desc: "Activate(cost 2): Deal 1-5 red damage",
+      condition: { type: "Activation", cost: 2 },
+      rarity: {
+        type: "Common"
+      },
+      target: { type: "Enemy" },
+      effect: { type: "Attack", color: { type: "Red" }, min: 1, max: 5 }
+    },
+    {
+      id: 1,
+      name: "Water Punch",
+      desc: "Activate (cost 4): Deal 2-4 blue damage",
+      imgUrl: ability2,
+      condition: { type: "Activation", cost: 4 },
+      rarity: {
+        type: "Common"
+      },
+      target: { type: "Enemy" },
+      effect: { type: "Attack", color: { type: "Blue" }, min: 2, max: 4 }
+    },
+    {
+      id: 2,
+      name: "Posion Punch",
+      desc: "Activate (cost 6): Poisons targets",
+      imgUrl: ability5,
+      condition: { type: "Activation", cost: 6 },
+      rarity: {
+        type: "Common"
+      },
+      target: { type: "Enemy" },
+      effect: { type: "Poison", min: 1, max: 3 }
+    },
+    {
+      id: 3,
+      name: "Stun Punch",
+      imgUrl: ability4,
+      desc: "Activate (cost 12): Stuns the target",
+      condition: { type: "Activation", cost: 12 },
+      rarity: {
+        type: "Common"
+      },
+      target: { type: "Enemy" },
+      effect: { type: "Stun" }
+    },
+    {
+      id: 4,
+      name: "Water Resist",
+      desc: "block 3-5 blue damage when taking damage",
+      imgUrl: ability7,
+      condition: { type: "TakeDamage" },
+      rarity: {
+        type: "Common"
+      },
+      target: { type: "Self" },
+      effect: { type: "Resist", color: { type: "Blue" }, min: 3, max: 5 }
+    },
+    {
+      id: 5,
+      name: "Earth Resist",
+      desc: "block 3-6 green damage when taking damage",
+      imgUrl: ability8,
+      condition: { type: "TakeDamage" },
+      rarity: {
+        type: "Common"
+      },
+      target: { type: "Self" },
+      effect: { type: "Resist", color: { type: "Green" }, min: 3, max: 6 }
+    },
+  ],
+  status: [],
+  level: 10,
+  exp: 30,
+},
+]
+export const unit_pool: Unit[] = [
+  {
+    player_owner: 1,
+    id: 0,
+    name: "Warlord",
+    imgUrl: portrait,
+    healty: 150,
+    mana: 70,
     level: 3,
     exp: 20,
     status: [],
     traits: [
       {
-        id: 1,
+        id: 0,
         imgUrl: ability1,
         name: "Fire Punch",
+        desc: "Activate(cost 2): Deal 1-5 red damage",
         condition: { type: "Activation", cost: 2 },
         rarity: {
           type: "Common"
@@ -129,8 +423,9 @@ export const units: Unit[] = [
         effect: { type: "Attack", color: { type: "Red" }, min: 1, max: 5 }
       },
       {
-        id: 6,
+        id: 1,
         name: "Water Resist",
+        desc: "block 3-5 blue damage when taking damage",
         imgUrl: ability7,
         condition: { type: "TakeDamage" },
         rarity: {
@@ -140,9 +435,10 @@ export const units: Unit[] = [
         effect: { type: "Resist", color: { type: "Blue" }, min: 3, max: 5 }
       },
       {
-        id: 10,
+        id: 2,
         name: "Stun Punch",
         imgUrl: ability4,
+        desc: "Activate (cost 12): Stuns the target",
         condition: { type: "Activation", cost: 12 },
         rarity: {
           type: "Common"
@@ -153,18 +449,24 @@ export const units: Unit[] = [
     ]
   },
   {
-    player_owner: 0,
+    player_owner: 1,
     id: 1,
-    name: "0000",
+    name: "Seer",
+    imgUrl: portrait1,
     healty: 100,
-    mana: 100,
+    mana: 150,
     level: 3,
     exp: 20,
-    status: [],
+    status: [
+      { name: "Poison", duration: 3, type: { type: 'Poisoned' } },
+      { name: "Stun", duration: 3, type: { type: 'Stun' } },
+      { name: "Bleeding", duration: 3, type: { type: 'Bleeding' } }
+    ],
     traits: [
       {
-        id: 2,
+        id: 0,
         name: "Heal",
+        desc: "Activate (cost 3): Restore 1-5 health points",
         imgUrl: ability10,
         condition: { type: "Activation", cost: 3 },
         rarity: {
@@ -174,8 +476,9 @@ export const units: Unit[] = [
         effect: { type: "Heal", min: 1, max: 5 }
       },
       {
-        id: 3,
+        id: 1,
         name: "Water Punch",
+        desc: "Activate (cost 4): Deal 2-4 blue damage",
         imgUrl: ability2,
         condition: { type: "Activation", cost: 4 },
         rarity: {
@@ -185,8 +488,9 @@ export const units: Unit[] = [
         effect: { type: "Attack", color: { type: "Blue" }, min: 2, max: 4 }
       },
       {
-        id: 5,
+        id: 2,
         name: "Fire Resist",
+        desc: "block 1-5 red damage when taking damage",
         imgUrl: ability6,
         condition: { type: "TakeDamage" },
         rarity: {
@@ -198,18 +502,20 @@ export const units: Unit[] = [
     ]
   },
   {
-    player_owner: 0,
+    player_owner: 1,
     id: 2,
-    name: "0000",
-    healty: 100,
+    name: "Ranger",
+    imgUrl: portrait2,
+    healty: 70,
     mana: 100,
     level: 3,
     exp: 20,
     status: [],
     traits: [
       {
-        id: 12,
+        id: 0,
         name: "Bleeding",
+        desc: "Activate (cost 7): Causes bleeding on the target",
         imgUrl: ability12,
         condition: { type: "Activation", cost: 7 },
         rarity: {
@@ -219,88 +525,47 @@ export const units: Unit[] = [
         effect: { type: "Bleeding", color: { type: "Green" }, min: 1, max: 5 }
       },
       {
-        id: 7,
+        id: 1,
         name: "Earth Resist",
+        desc: "block 3-6 green damage when taking damage",
         imgUrl: ability8,
         condition: { type: "TakeDamage" },
         rarity: {
           type: "Common"
         },
         target: { type: "Self" },
-        effect: { type: "Resist", color: { type: "Green" }, min: 1, max: 4 }
+        effect: { type: "Resist", color: { type: "Green" }, min: 3, max: 6 }
       },
       {
-        id: 8,
+        id: 2,
         name: "Posion Punch",
+        desc: "Activate (cost 6): Poisons targets",
         imgUrl: ability5,
         condition: { type: "Activation", cost: 6 },
         rarity: {
           type: "Common"
         },
         target: { type: "Enemy" },
-        effect: { type: "Poison", min: 1, max: 5 }
-      },
-    ]
-  },
-  {
-    player_owner: 0,
-    id: 3,
-    name: "0000",
-    healty: 100,
-    mana: 100,
-    level: 3,
-    exp: 20,
-    status: [],
-    traits: [
-      {
-        id: 11,
-        name: "AutoHeal",
-        imgUrl: ability11,
-        condition: { type: "EndTurn" },
-        rarity: {
-          type: "Rare"
-        },
-        target: { type: "Self" },
-        effect: { type: "Heal", min: 1, max: 5 }
-      },
-      {
-        id: 9,
-        name: "Vampirism",
-        imgUrl: ability12,
-        condition: { type: "Activation", cost: 9 },
-        rarity: {
-          type: "Mythical"
-        },
-        target: { type: "All" },
-        effect: { type: "Vampirism", min: 1, max: 7 }
-      },
-      {
-        id: 4,
-        name: "Earth Punch",
-        imgUrl: ability3,
-        condition: { type: "Activation", cost: 7 },
-        rarity: {
-          type: "Rare"
-        },
-        target: { type: "Enemy" },
-        effect: { type: "Attack", color: { type: "Green" }, min: 5, max: 10 }
+        effect: { type: "Poison", min: 1, max: 3 }
       },
     ]
   },
   {
     player_owner: 1,
-    id: 0,
-    name: "0000",
-    healty: 100,
-    mana: 100,
+    id: 3,
+    name: "Knight",
+    imgUrl: portrait3,
+    healty: 170,
+    mana: 90,
     level: 3,
     exp: 20,
     status: [],
     traits: [
       {
-        id: 1,
-        name: "Fire Punch",
+        id: 0,
         imgUrl: ability1,
+        name: "Fire Punch",
+        desc: "Activate (cost 2): Deal 1-5 red damage",
         condition: { type: "Activation", cost: 2 },
         rarity: {
           type: "Common"
@@ -309,19 +574,21 @@ export const units: Unit[] = [
         effect: { type: "Attack", color: { type: "Red" }, min: 1, max: 5 }
       },
       {
-        id: 6,
-        name: "Water Resist",
-        imgUrl: ability7,
-        condition: { type: "TakeDamage" },
+        id: 1,
+        name: "Bleeding",
+        imgUrl: ability12,
+        desc: "Activate (cost 7): Causes bleeding on the target",
+        condition: { type: "Activation", cost: 7 },
         rarity: {
-          type: "Common"
+          type: "Rare"
         },
-        target: { type: "Self" },
-        effect: { type: "Resist", color: { type: "Blue" }, min: 3, max: 5 }
+        target: { type: "Aliade" },
+        effect: { type: "Bleeding", color: { type: "Green" }, min: 1, max: 5 }
       },
       {
-        id: 10,
+        id: 2,
         name: "Stun Punch",
+        desc: "Activate (cost 12): Stuns the target",
         imgUrl: ability4,
         condition: { type: "Activation", cost: 12 },
         rarity: {
@@ -332,143 +599,56 @@ export const units: Unit[] = [
       },
     ]
   },
-  {
-    player_owner: 1,
-    id: 1,
-    name: "0000",
-    healty: 100,
-    mana: 100,
-    level: 3,
-    exp: 20,
-    status: [],
-    traits: [
-      {
-        id: 2,
-        name: "Heal",
-        imgUrl: ability10,
-        condition: { type: "Activation", cost: 3 },
-        rarity: {
-          type: "Common"
-        },
-        target: { type: "Aliade" },
-        effect: { type: "Heal", min: 1, max: 5 }
-      },
-      {
-        id: 3,
-        name: "Water Punch",
-        imgUrl: ability2,
-        condition: { type: "Activation", cost: 4 },
-        rarity: {
-          type: "Common"
-        },
-        target: { type: "Enemy" },
-        effect: { type: "Attack", color: { type: "Blue" }, min: 2, max: 4 }
-      },
-      {
-        id: 5,
-        name: "Fire Resist",
-        imgUrl: ability6,
-        condition: { type: "TakeDamage" },
-        rarity: {
-          type: "Common"
-        },
-        target: { type: "Self" },
-        effect: { type: "Resist", color: { type: "Red" }, min: 1, max: 5 }
-      },
-    ]
-  },
-  {
-    player_owner: 1,
-    id: 2,
-    name: "0000",
-    healty: 100,
-    mana: 100,
-    level: 3,
-    exp: 20,
-    status: [],
-    traits: [
-      {
-        id: 12,
-        name: "Bleeding",
-        imgUrl: ability12,
-        condition: { type: "Activation", cost: 7 },
-        rarity: {
-          type: "Rare"
-        },
-        target: { type: "Aliade" },
-        effect: { type: "Bleeding", color: { type: "Green" }, min: 1, max: 5 }
-      },
-      {
-        id: 7,
-        name: "Earth Resist",
-        imgUrl: ability9,
-        condition: { type: "TakeDamage" },
-        rarity: {
-          type: "Common"
-        },
-        target: { type: "Self" },
-        effect: { type: "Resist", color: { type: "Green" }, min: 1, max: 4 }
-      },
-      {
-        id: 8,
-        name: "Posion Punch",
-        imgUrl: ability5,
-        condition: { type: "Activation", cost: 6 },
-        rarity: {
-          type: "Common"
-        },
-        target: { type: "Enemy" },
-        effect: { type: "Poison", min: 1, max: 5 }
-      },
-    ]
-  },
-  {
-    player_owner: 1,
-    id: 3,
-    name: "0000",
-    healty: 100,
-    mana: 100,
-    level: 3,
-    exp: 20,
-    status: [],
-    traits: [
-      {
-        id: 11,
-        name: "AutoHeal",
-        imgUrl: ability11,
-        condition: { type: "EndTurn" },
-        rarity: {
-          type: "Rare"
-        },
-        target: { type: "Self" },
-        effect: { type: "Heal", min: 1, max: 5 }
-      },
-      {
-        id: 9,
-        name: "Vampirism",
-        imgUrl: ability12,
-        condition: { type: "Activation", cost: 9 },
-        rarity: {
-          type: "Mythical"
-        },
-        target: { type: "All" },
-        effect: { type: "Vampirism", min: 1, max: 7 }
-      },
-      {
-        id: 4,
-        name: "Earth Punch",
-        imgUrl: ability3,
-        condition: { type: "Activation", cost: 7 },
-        rarity: {
-          type: "Rare"
-        },
-        target: { type: "Enemy" },
-        effect: { type: "Attack", color: { type: "Green" }, min: 5, max: 10 }
-      },
-    ]
-  },
 ]
-
+// {
+//   player_owner: 1,
+//   id: 7,
+//   name: "Baron",
+//   imgUrl: portrait4,
+//   healty: 120,
+//   mana: 120,
+//   level: 3,
+//   exp: 20,
+//   status: [],
+//   traits: [
+//     {
+//       id: 11,
+//       name: "AutoHeal",
+//       desc: "Restore 1-5 health points at end of turn",
+//       imgUrl: ability11,
+//       condition: { type: "EndTurn" },
+//       rarity: {
+//         type: "Rare"
+//       },
+//       target: { type: "Self" },
+//       effect: { type: "Heal", min: 1, max: 5 }
+//     },
+//     {
+//       id: 9,
+//       name: "Vampirism",
+//       desc: "Activate (cost 9): Drains 1-7 life point from target",
+//       imgUrl: ability12,
+//       condition: { type: "Activation", cost: 9 },
+//       rarity: {
+//         type: "Mythical"
+//       },
+//       target: { type: "All" },
+//       effect: { type: "Vampirism", min: 1, max: 7 }
+//     },
+//     {
+//       id: 4,
+//       name: "Earth Punch",
+//       desc: "Activate (cost 7): Deal 5-10 green damage",
+//       imgUrl: ability3,
+//       condition: { type: "Activation", cost: 7 },
+//       rarity: {
+//         type: "Rare"
+//       },
+//       target: { type: "Enemy" },
+//       effect: { type: "Attack", color: { type: "Green" }, min: 5, max: 10 }
+//     },
+//   ]
+// },
 
 
 
