@@ -221,6 +221,7 @@ function Actions({ targetingUnit }: { targetingUnit: number }) {
                     item_id: id,
                     targets: 0,
                   }))
+                setMenuState("main")
 
               }
             }}><p>Spider</p><img
@@ -242,6 +243,7 @@ function Actions({ targetingUnit }: { targetingUnit: number }) {
                     targets: 1,
                   }))
 
+                setMenuState("main")
               }
             }}><p>Knight</p><img
                 src={enemy_knight}
@@ -262,6 +264,7 @@ function Actions({ targetingUnit }: { targetingUnit: number }) {
                     targets: 2,
                   }))
 
+                setMenuState("main")
               }
             }}><p>Spider</p><img
                 src={enemy_spider}

@@ -221,7 +221,7 @@ const matchSlice = createSlice({
               }
               default: break
             }
-            if (status.duration >= 0) {
+            if (status.duration <= 0) {
               unit.status.splice(k, 1)
               k -= 1
             }
@@ -264,7 +264,7 @@ const matchSlice = createSlice({
               }
               default: break
             }
-            if (status.duration >= 0) {
+            if (status.duration <= 0) {
               unit.status.splice(k, 1)
               k -= 1
             }
