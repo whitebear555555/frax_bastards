@@ -172,6 +172,9 @@ function Actions({ targetingUnit }: { targetingUnit: number }) {
   function lastIsTrait(): boolean {
     return lasActionMenuState == "traits"
   }
+  function lastIsItem(): boolean {
+    return lasActionMenuState == "items"
+  }
   return (
     <>
       <div className='Actions'>
@@ -362,9 +365,16 @@ function Actions({ targetingUnit }: { targetingUnit: number }) {
         }
       </div >
       <div className='Description'>
-        <p> {"Turn " + currentUnit.name} </p>
-        {currentPlyer.id == 1 && <p> Choose action </p>}
-        <p> Deal 5 red damager</p>
+        <p> {currentPlyer.id == 1 && "Choose action " + "Turn " + currentUnit.name}
+        </p>
+        {actionMenuState == "select" &&
+          lastIsTrait() &&
+          <p> {currentUnit.traits[id].desc}</p>
+        }
+        {actionMenuState == "select" &&
+          lastIsItem() &&
+          <p> {currentPlyer.items[id].desc}</p>
+        }
       </div>
     </>
   )
