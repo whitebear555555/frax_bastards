@@ -36,19 +36,22 @@ export default function Wallet() {
     }))
   };
   return (
-    <>
+    < div className='Memo' >
+      {/* <button className='' onClick={simulation}> */}
+      {/*   Create Wallet */}
+      {/* </button > */}
       <button className='' onClick={simulation}>
-        Create Wallet
       </button >
-      < p className='ItemDesc' >
+      <h2> Memo wallet phrase:</h2>
+      < div className='' >
         {mnemonic}
-      </p>
+      </div>
       < p className='ItemDesc' >
         {trans}
       </p>
 
       <NavBar />
-    </>
+    </div>
   )
 }
 
