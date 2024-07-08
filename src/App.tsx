@@ -36,7 +36,7 @@ import Menu from './pages/menu.tsx'
 import Wallet from './pages/wallet.tsx'
 import FriendsList from './pages/friends.tsx'
 import { endTurn, useItem, useTrait } from './app/store.ts'
-import { Player, StatusEffectType, Unit, unit_pool } from './pages/game.tsx'
+import { AnimationState, Player, StatusEffectType, Unit, unit_pool } from './pages/game.tsx'
 
 function EnemyUnitContainer({ targetingUnit }: { targetingUnit: (unit_id: number) => void; }) {
   const player = useAppSelector((state) => state.match.players[0])
@@ -53,7 +53,7 @@ function EnemyUnit({ unit, targetingUnit }: { targetingUnit: (unit_id: number) =
   return (<div className='EnemyUnit'>
     <img
       src={unit.imgUrl}
-      className={"EnemyUnit" + unit.name + "Img"}
+      className={"EnemyUnit" + unit.name + "Img " + unit.animationState}
     // onClick={action}
     />
     <p className='UnitStatus'> {unit.name}</p>
@@ -116,7 +116,7 @@ export function PlayerUnit({ unit, targetingUnit }: { targetingUnit: (unit_id: n
     />
     <img
       src={unit.imgUrl}
-      className="UnitPortraitImg"
+      className={"UnitPortraitImg " + unit.animationState}
     // onClick={action}
     />
   </div>)
@@ -368,8 +368,10 @@ function Actions({ targetingUnit }: { targetingUnit: number }) {
         }
       </div >
       <div className='Description'>
-        <p> {currentPlyer.id == 1 && "Choose action " + "Turn " + currentUnit.name}
+        <p> {currentPlyer.id == 1 && "Turn " + currentUnit.name}
         </p>
+        {actionMenuState == "traits" && lasActionMenuState == "main" && <p>Choose traite</p>}
+        {actionMenuState == "items" && lasActionMenuState == "main" && <p>Choose item</p>}
         {actionMenuState == "select" &&
           lastIsTrait() &&
           <p> {currentUnit.traits[id].desc}</p>
@@ -378,6 +380,7 @@ function Actions({ targetingUnit }: { targetingUnit: number }) {
           lastIsItem() &&
           <p> {currentPlyer.items[id].desc}</p>
         }
+        {actionMenuState == "main" && <p>Choose action</p>}
       </div>
     </>
   )

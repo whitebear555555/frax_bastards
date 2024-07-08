@@ -93,24 +93,24 @@
   max-height: 5vh;
   min-height: 2vh;
 }
-.el {
-  animation: blink 2s linear infinite;
-  background: #000;
-}
+.TakeDamage {
+  color: #000;
+  animation-delay: 0s;
+  animation: blink normal 0.5s 3 ease-in-out; 
 
-.el:nth-child(1) { animation-delay: 0s; }
-.el:nth-child(2) { animation-delay: 0.5s; }
-.el:nth-child(3) { animation-delay: 1s; }
-.el:nth-child(4) { animation-delay: 1.5s; }
+}
 
 @keyframes blink {
-  0%, 20% {
-    background: #000;
-  }
-  10% {
-    background: #F00;
-  }
-}
+    0% {
+        opacity:1;
+    }
+    50% {
+        opacity:0;
+    }
+    100% {
+        opacity:1;
+    }
+} 
 .BottomSide{
   width: 100vw;
   height: 52vh;
@@ -244,7 +244,7 @@
   //visibility: hidden;
   position: absolute;
   bottom:0;
-  width: 100vw;
+  width: 100%;
   height: 10vh;
   display: flex;
   gap: 15vw;
@@ -275,7 +275,6 @@
   display: flex;
   flex-direction: column;
   width: 95vw;
-  margin-left: 5vw;
 
   font-size:3vh;
 
@@ -289,7 +288,9 @@
   margin-bottom: 1vh;
   gap: 5vw;
   border-radius: 10% / 50% 0 0 50% ;
+  max-width:90%;
 
+  margin-left: 10%;
   font-size:3vh;
 }
 .Task img{
@@ -326,6 +327,7 @@
   gap: 5vw;
   border-radius: 10% / 50% 0 0 50% ;
 
+  margin-left: 5%;
   font-size:3vh;
 }
 .Friend img{
@@ -335,8 +337,7 @@
 .FriendsContainer{
   display: flex;
   flex-direction: column;
-  width: 95vw;
-  margin-left: 5vw;
+  font-size:3vh;
 }
 .FriendsContainer h2{
   color: white;
@@ -380,13 +381,16 @@
 }
 .Inventory{
   height: 60vh;
-  width: 90vw;
+  width: 80vw;
   max-width:90%;
   background-color: rgb(138, 138, 138);
   border-radius: 10% / 80%;
   margin: auto;
   display: flex;
   flex-flow: row wrap;
+    display: flex;
+    justify-content: center;
+    align-items: center
 }
 .Inventory .PlayerUnit{
   height: 20vh;
@@ -394,7 +398,7 @@
   min-width: 40%;
   min-height: 50%;
 
-  max-width:384px;
+  max-width:304px;
 }
 .Inventory .UnitPortraitImg{
   position: absolute;
@@ -402,6 +406,7 @@
   /*width: 19vw;*/
   /*height: 20vh;*/
 
+  margin: auto;
   width: 87%;
   height: 68%;
 }
@@ -452,45 +457,45 @@
 
 
 
-ul {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-  background-color: #333;
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-}
-
-li {
-  float: center;
-}
-
-li a {
-  display: block;
-  color: white;
-  text-align: center;
-  padding: 14px 16px;
-  text-decoration: none;
-}
-
-li a:hover:not(.active) {
-  background-color: #111;
-}
-
-.active {
-  background-color: #04AA6D;
-}
-.Task{
-  text-align: center;
-  background-color: greey;
-
-  min-height: 10vh;
-  min-width: 80vw;
-
-}
-
+/*ul {*/
+/*  list-style-type: none;*/
+/*  margin: 0;*/
+/*  padding: 0;*/
+/*  overflow: hidden;*/
+/*  background-color: #333;*/
+/*  position: fixed;*/
+/*  bottom: 0;*/
+/*  width: 100%;*/
+/*}*/
+/**/
+/*li {*/
+/*  float: center;*/
+/*}*/
+/**/
+/*li a {*/
+/*  display: block;*/
+/*  color: white;*/
+/*  text-align: center;*/
+/*  padding: 14px 16px;*/
+/*  text-decoration: none;*/
+/*}*/
+/**/
+/*li a:hover:not(.active) {*/
+/*  background-color: #111;*/
+/*}*/
+/**/
+/*.active {*/
+/*  background-color: #04AA6D;*/
+/*}*/
+/*.Task{*/
+/*  text-align: center;*/
+/*  background-color: greey;*/
+/**/
+/*  min-height: 10vh;*/
+/*  min-width: 80vw;*/
+/**/
+/*}*/
+/**/
 .App {
   background-color: black;
 
@@ -504,184 +509,3 @@ li a:hover:not(.active) {
   /*font-size: calc(10px + 2vmin);*/
 }
 
-.Space {
-  min-height: 10vmin;
-  /* height: 6vmin; */
-}
-
-.Player {
-  min-height: 30vmin;
-  display: flex;
-  flex-direction: row;
-}
-
-.CharacterBar {
-  border: 1px solid white;
-  border-radius: 10px;
-  color: white;
-  height: 30%;
-}
-
-.Progress {
-  width: 100%;
-  background-color: grey;
-}
-
-.Bar {
-  width: 1%;
-  height: 30px;
-  background-color: red;
-}
-
-.Avatar {
-  /* display: inline; */
-  /* float: left; */
-  height: 40vmin;
-  /* display: inline-block; */
-  /* vertical-align: middle; */
-  /* position: absolute; */
-  /* right: 3%; */
-  /* top: 3%; */
-  animation: Avatar-float infinite 3s ease-in-out;
-}
-
-@keyframes Avatar-float {
-  0% {
-    transform: translateY(0);
-  }
-
-  50% {
-    transform: translateY(10px);
-  }
-
-  100% {
-    transform: translateY(0px);
-  }
-}
-
-.ActionNav {
-  /* min-width: 100vmin; */
-  min-height: 30vmin;
-  border: 1px solid white;
-  border-radius: 10px;
-  bottom: 0;
-  /* height: 45vmin; */
-  color: white;
-  /* display: flex; */
-}
-
-.ActionButton {
-  display: flex;
-  flex-flow: row wrap;
-  /* height: 100%; */
-  height: 10vmin;
-  color: white;
-}
-
-.ActionButton button {
-  height: 100%;
-  width: 50%;
-  color: white;
-  background-color: black;
-  /* height: 50%;   */
-}
-
-/* The side navigation menu */
-.SideNav {
-  height: 0;
-  /* 100% Full-height */
-  width: 100%;
-  /* 0 width - change this with JavaScript */
-  position: fixed;
-  /* Stay in place */
-  z-index: 1;
-  /* Stay on top */
-  bottom: 0;
-  /* Stay at the top */
-  /*top: 0; Stay at the top */
-  left: 0;
-  background-color: #111;
-  /* Black*/
-  overflow-x: hidden;
-  /* Disable horizontal scroll */
-  padding-top: 20px;
-  /* Place content 60px from the top */
-  transition: 0.5s;
-  /* 0.5 second transition effect to slide in the sidenav */
-}
-
-/* The navigation menu links */
-.SideNav a {
-  padding: 8px 8px 8px 32px;
-  text-decoration: none;
-  font-size: 25px;
-  color: #818181;
-  display: block;
-  transition: 0.3s;
-}
-
-/* When you mouse over the navigation links, change their color */
-.SideNav a:hover {
-  color: #f1f1f1;
-}
-
-/* Position and style the close button (top right corner) */
-.SideNav .closeBtn {
-  position: fixed;
-  top: 0;
-  right: 25px;
-  font-size: 36px;
-  margin-left: 50px;
-  color: red;
-}
-
-/* Style page content - use this if you want to push the page content to the right when you open the side navigation */
-#main {
-  transition: margin-left .5s;
-  padding: 20px;
-}
-
-/* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
-/* @media screen and (max-height: 450px) { */
-/*   .sidenav {padding-top: 15px;} */
-/*   .sidenav a {font-size: 18px;} */
-/* }  */
-
-.Item {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  /* margin: 0 20vmin 0 20vmin; */
-  margin: auto;
-  font-size: calc(10px + 2vmin);
-  border: 1px solid white;
-  height: 30vmin;
-  width: 100%;
-  background-color: black;
-}
-
-.Item:active {
-  background-color: olive;
-}
-
-.ItemImg {
-  display: flex;
-  /* align-items: center; */
-  justify-content: flex-start;
-  height: 25vmin;
-  width: 25vmin;
-  margin: 0 3% 0 2%;
-  /* display: flex; */
-  /* display: inline-block; */
-  /* animation: Avatar-float infinite 3s ease-in-out; */
-}
-
-.ItemDesc {
-  display: flex;
-  /* align-items: flex-start; */
-  /* float: left; */
-  /* display: flex; */
-  /* display: inline-block; */
-  /* display: flex; */
-  color: white;
-}

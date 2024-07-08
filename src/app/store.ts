@@ -1,7 +1,7 @@
 import type { Action, PayloadAction, ThunkAction } from "@reduxjs/toolkit"
 import { combineSlices, configureStore, createSlice } from "@reduxjs/toolkit"
 import { setupListeners } from "@reduxjs/toolkit/query"
-import { ActionChooseUnit, ActionItem, ActionTrait, Match, StatusEffect, StatusEffectType, Unit, enemy_unit_pool, item_pool, unit_pool } from "../pages/game"
+import { ActionChooseUnit, ActionItem, ActionSetAnimationState, ActionTrait, Match, StatusEffect, StatusEffectType, Unit, enemy_unit_pool, item_pool, unit_pool } from "../pages/game"
 import { stat } from "fs";
 import { Status } from "viem";
 import { switchAccount } from "wagmi/actions";
@@ -81,11 +81,16 @@ const initialState: Match = {
   end: false,
   winner: 0,
 }
-
+const delay = ms => new Promise(res => setTimeout(res, ms));
 const matchSlice = createSlice({
   name: 'Match',
   initialState,
   reducers: {
+    setAnimationState: (state, payload: PayloadAction<ActionSetAnimationState>) => {
+      const player = state.players[payload.payload.player_id]
+      const unit = player.units[payload.payload.unit_id]
+      unit.animationState = payload.payload.state
+    },
     chooseUnit: (state, payload: PayloadAction<ActionChooseUnit>) => {
       state.players[1].units = payload.payload
       state.turnOrder[0][1] = state.players[1].units[0].id
@@ -132,11 +137,14 @@ const matchSlice = createSlice({
               }
             }
             target_unit.healty -= attack
+            unit.mana -= trait.condition.cost
+            target_unit.animationState = "TakeDamage"
             break
           }
           case 'Resist': { break }
           case 'Heal': {
             unit.healty += randomInteger(trait.effect.min, trait.effect.max)
+            //add mana consuming
             break
           }
           case 'Vampirism': {

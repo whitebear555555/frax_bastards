@@ -39,7 +39,7 @@ export default function TaskList() {
 }
 function TaskBottom({ title }) {
   return (
-    <button className='Task'>
+    <div className='Task'>
       <img
         src={tg}
         className=""
@@ -47,7 +47,7 @@ function TaskBottom({ title }) {
       />
       <p className=''>
         {title} </p>
-    </button>)
+    </div>)
 }
 {/* <Link */ }
 {/*   className='NavBarButton' key={idx} */ }

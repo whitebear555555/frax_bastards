@@ -9,15 +9,18 @@ export default function FriendsList() {
     { title: "profile" }, ,
   ]
   return (
-    <div className='FriendsContainer'>
-      <h2 className=''>5 friends</h2>
-      <p className=''>(referrals information)</p>
-      {
-        question.map((item, idx) =>
-          <FriendBottom key={idx} {...item} />
-        )
-      }
-    </div>
+    <>
+      <div className='FriendsContainer'>
+        <h2 className=''>5 friends</h2>
+        <p className=''>(referrals information)</p>
+        {
+          question.map((item, idx) =>
+            <FriendBottom key={idx} {...item} />
+          )
+        }
+      </div>
+      <NavBar />
+    </>
   )
 }
 function FriendBottom({ title }) {
@@ -33,7 +36,6 @@ function FriendBottom({ title }) {
           {title} </p>
       </button>
 
-      <NavBar />
     </>
   )
 }

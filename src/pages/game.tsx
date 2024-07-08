@@ -1,5 +1,10 @@
 
 export type ActionChooseUnit = Unit[]
+export type ActionSetAnimationState = {
+  "player_id": number;
+  "unit_id": number;
+  "state": AnimationState;
+}
 export type ActionTrait = {
   "player_id": number;
   "unit_id": number;
@@ -25,6 +30,10 @@ export type Player = {
   units: Unit[],
   items: Item[]
 }
+export type AnimationState = (
+  "" | "TakeDamage"
+)
+
 export type Unit = {
   player_owner: number,
   id: number;
@@ -36,6 +45,7 @@ export type Unit = {
   status: StatusEffect[],
   level: number;
   exp: number;
+  animationState: AnimationState
 }
 export type Trait = {
   id: number;
@@ -172,6 +182,7 @@ export const enemy_unit_pool: Unit[] = [{
   imgUrl: enemy_spider,
   healty: 100,
   mana: 100,
+  animationState: "",
   traits: [
     {
       id: 0,
@@ -256,6 +267,7 @@ export const enemy_unit_pool: Unit[] = [{
   imgUrl: enemy_knight,
   healty: 200,
   mana: 150,
+  animationState: "",
   traits: [
     {
       id: 0,
@@ -319,6 +331,7 @@ export const enemy_unit_pool: Unit[] = [{
   imgUrl: enemy_spider,
   healty: 100,
   mana: 100,
+  animationState: "",
   traits: [
     {
       id: 0,
@@ -408,6 +421,7 @@ export const unit_pool: Unit[] = [
     mana: 70,
     level: 3,
     exp: 20,
+    animationState: "",
     status: [],
     traits: [
       {
@@ -457,6 +471,7 @@ export const unit_pool: Unit[] = [
     mana: 150,
     level: 3,
     exp: 20,
+    animationState: "",
     status: [
       { name: "Poison", duration: 3, type: { type: 'Poisoned' } },
       { name: "Stun", duration: 3, type: { type: 'Stun' } },
@@ -510,6 +525,7 @@ export const unit_pool: Unit[] = [
     mana: 100,
     level: 3,
     exp: 20,
+    animationState: "",
     status: [],
     traits: [
       {
@@ -559,6 +575,7 @@ export const unit_pool: Unit[] = [
     mana: 90,
     level: 3,
     exp: 20,
+    animationState: "",
     status: [],
     traits: [
       {

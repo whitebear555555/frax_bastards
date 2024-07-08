@@ -25,40 +25,42 @@ export default function Menu({ unitPool }: { unitPool: Unit[] }) {
     setTargetingUnit(unit_id)
   }
   return (
-    <div className='MenuContainer'>
-      <h2>form squad</h2>
-      <p>(squad information)</p>
-      <div className='Inventory'>
-        {
-          unitSelected.map((id, idx) =>
-            <PlayerUnit key={idx} unit={unitPool[id]} />
-          )
-        }
-      </div>
-      <p>5 mission avaible</p>
-      <Link
-        className='MenuContainerLink'
-        to={'/match'}
-        onClick={() => {
-          dispatch(chooseUnit([
-            unitPool[unitSelected[0]],
-            unitPool[unitSelected[1]],
-            unitPool[unitSelected[2]],
-            unitPool[unitSelected[3]],
-          ]))
-        }}
-      >
-        Play
-      </Link>
+    <>
+      <div className='MenuContainer'>
+        <h2>form squad</h2>
+        <p>(squad information)</p>
+        <div className='Inventory'>
+          {
+            unitSelected.map((id, idx) =>
+              <PlayerUnit key={idx} unit={unitPool[id]} />
+            )
+          }
+        </div>
+        <p>5 mission avaible</p>
+        <Link
+          className='MenuContainerLink'
+          to={'/match'}
+          onClick={() => {
+            dispatch(chooseUnit([
+              unitPool[unitSelected[0]],
+              unitPool[unitSelected[1]],
+              unitPool[unitSelected[2]],
+              unitPool[unitSelected[3]],
+            ]))
+          }}
+        >
+          Play
+        </Link>
 
-      {/* <img */}
-      {/*   src={squad} */}
-      {/*   className="" */}
-      {/* // onClick={action} */}
-      {/* /> */}
+        {/* <img */}
+        {/*   src={squad} */}
+        {/*   className="" */}
+        {/* // onClick={action} */}
+        {/* /> */}
 
+      </div >
       <NavBar />
-    </div >)
+    </>)
 }
 //wallet & logic
 function PlayerUnit({ unit }: { unit: Unit }) {
