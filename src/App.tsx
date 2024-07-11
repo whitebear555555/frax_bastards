@@ -3,7 +3,7 @@ import usetrait from '/assets/usetrait.png'
 import useitem from '/assets/useitem.png'
 import useend from '/assets/useend.png'
 import useback from '/assets/useback.png'
-import { Fragment, PropsWithChildren, useState } from 'react'
+import { Fragment, PropsWithChildren, useEffect, useState } from 'react'
 import reactLogo from './assets/react.svg'
 import twaLogo from './assets/tapps.png'
 import viteLogo from '/assets/vite.svg'
@@ -15,7 +15,7 @@ import path_friends from '/assets/path_friends.png'
 import path_tasks from '/assets/path_tasks.png'
 import path_home from '/assets/path_home.png'
 import background from '/assets/background.png'
-import enemy_knight from '/assets/enemy_knight.png'
+import enemy_boss from '/assets/enemy_boss.png'
 import enemy_spider from '/assets/enemy_spider.png'
 import portrait from '/assets/portrait.png'
 import portrait1 from '/assets/portrait(1).png'
@@ -33,36 +33,60 @@ import ErrorPage from './pages/erroe-page.tsx'
 import { Link, Outlet, createBrowserRouter } from 'react-router-dom'
 import TaskList from './pages/tasks.tsx'
 import Menu from './pages/menu.tsx'
-import Wallet from './pages/wallet.tsx'
+import Wallet from './wallet/app.tsx'
 import FriendsList from './pages/friends.tsx'
-import { endTurn, useItem, useTrait } from './app/store.ts'
+import { botStep, endTurn, setAnimationState, useItem, useTrait } from './app/store.ts'
 import { AnimationState, Player, StatusEffectType, Unit, unit_pool } from './pages/game.tsx'
+import anim from "/assets/anim.png"
 
-function EnemyUnitContainer({ targetingUnit }: { targetingUnit: (unit_id: number) => void; }) {
+function EnemyUnitContainer() {
   const player = useAppSelector((state) => state.match.players[0])
   return (
     <div className='EnemyUnitContainer'>
-      <EnemyUnit unit={player.units[0]} targetingUnit={targetingUnit} />
-      <EnemyUnit unit={player.units[1]} targetingUnit={targetingUnit} />
-      <EnemyUnit unit={player.units[2]} targetingUnit={targetingUnit} />
+      {/* <img */}
+      {/*   //src={anim} */}
+      {/*   className={"TakeDamage"} */}
+      {/* // onClick={action} */}
+      {/* /> */}
+      <EnemyUnit unit={player.units[0]} />
+      <EnemyUnit unit={player.units[1]} />
+      <EnemyUnit unit={player.units[2]} />
     </div>
   )
 }
 //function EnemyUnit({ type, imgUrl }: { type: string, imgUrl: string }) {
-function EnemyUnit({ unit, targetingUnit }: { targetingUnit: (unit_id: number) => void; unit: Unit }) {
+function EnemyUnit({ unit }: { unit: Unit }) {
+  const selectUnit = useAppSelector((state) => state.match.turnOrder[state.match.turn])
+  const dispatch = useAppDispatch()
+  useEffect(() => {
+
+    const timer = setTimeout(() => {
+      dispatch(setAnimationState({ player_id: unit.player_owner, unit_id: unit.id, state: "", }))
+    }, 2000)
+
+    return () => { clearTimeout(timer) }
+  }, [unit.animationState])
   return (<div className='EnemyUnit'>
     <img
       src={unit.imgUrl}
-      className={"EnemyUnit" + unit.name + "Img " + unit.animationState}
+      className={"EnemyUnit" + unit.name + "Img EnemyUnitImgBack"}
     // onClick={action}
     />
-    <p className='UnitStatus'> {unit.name}</p>
-    <p className='UnitStatus'> {unit.healty + "/" + unit.mana}</p>
-    <div className='EnemyUnitStatus'>
-      {
-        unit.status.map((s, idx) =>
-          <PlayerUnitStatus key={idx} statusEffectType={s.type} />)
-      }
+    <img
+      src={unit.imgUrl}
+      className={"EnemyUnit" + unit.name + "Img " + unit.animationState + (selectUnit[0] == unit.player_owner && selectUnit[1] == unit.id ? " SelectEnemyUnit" : null)}
+    // onClick={action}
+
+    />
+    <div className='UnitStatusDecs'>
+      <p className={"UnitStatus" + " Re" + unit.name}> {unit.name}</p>
+      <p className={"UnitStatus" + " Re" + unit.name}> {unit.healty + "/" + unit.mana}</p>
+      <div className={"EnemyUnitStatus" + " Re" + unit.name}>
+        {
+          unit.status.map((s, idx) =>
+            <PlayerUnitStatus key={idx} statusEffectType={s.type} />)
+        }
+      </div>
     </div>
   </div>)
 }
@@ -86,21 +110,32 @@ function EnemyUnit({ unit, targetingUnit }: { targetingUnit: (unit_id: number) =
 //     />
 //   </>)
 // }
-function PlayerUnitContainer({ targetingUnit }: { targetingUnit: (unit_id: number) => void; }) {
+function PlayerUnitContainer() {
   const player = useAppSelector((state) => state.match.players[1])
   return (
     <div className='PlayerUnitContainer'>
       {
         [0, 1, 2, 3].map((_, idx) =>
-          <PlayerUnit key={idx} unit={player.units[idx]} targetingUnit={targetingUnit} />
+          <PlayerUnit key={idx} unit={player.units[idx]} />
         )
       }
     </div >
   )
 }
-export function PlayerUnit({ unit, targetingUnit }: { targetingUnit: (unit_id: number) => void, unit: Unit }) {
-  return (<div className='PlayerUnit' onClick={() => targetingUnit(unit.id)}>
-    <div className='PlayerUnitStatus'>
+export function PlayerUnit({ unit }: { unit: Unit }) {
+  const [activeInfoModal, setAcriveInfoModal] = useState<Boolean>(false)
+  const selectUnit = useAppSelector((state) => state.match.turnOrder[state.match.turn])
+  const dispatch = useAppDispatch()
+  useEffect(() => {
+
+    const timer = setTimeout(() => {
+      dispatch(setAnimationState({ player_id: unit.player_owner, unit_id: unit.id, state: "", }))
+    }, 2000)
+
+    return () => { clearTimeout(timer) }
+  }, [unit.animationState])
+  return (<><div className='PlayerUnit' onClick={() => setAcriveInfoModal(true)}>
+    <div className='PlayerUnitStatus' >
       {
         unit.status.map((s, idx) =>
           <PlayerUnitStatus key={idx} statusEffectType={s.type} />)
@@ -114,12 +149,53 @@ export function PlayerUnit({ unit, targetingUnit }: { targetingUnit: (unit_id: n
       className="UnitPortraitBack"
     // onClick={action}
     />
+    <div
+      className={"UnitPortraitImgDiv"}
+    ></div>
     <img
       src={unit.imgUrl}
-      className={"UnitPortraitImg " + unit.animationState}
+      className={"UnitPortraitImg " + unit.animationState + (selectUnit[0] == unit.player_owner && selectUnit[1] == unit.id ? " SelectEnemyUnit" : null)}
     // onClick={action}
     />
-  </div>)
+  </div>
+    {activeInfoModal &&
+      <div className='UnitInfoModal'>
+        <div className='UnitInfoModalBack'>
+          <span className="close" onClick={() => setAcriveInfoModal(false)}>&times;</span>
+          <p className='Name'>{unit.name}</p>
+          <img
+            src={unit.imgUrl}
+            className={"UnitInfoModalPortraitImg"}
+          // onClick={action}
+          />
+          <p className='HP'>{"Healty: " + unit.healty}</p>
+          <p className='MP'>{"Mana: " + unit.mana}</p>
+          <div className='UnitInfoModalStatus' >
+            {
+              unit.status.map((s, idx) =>
+                <div key={idx}>
+                  <PlayerUnitStatus statusEffectType={s.type} />
+                  <p> {s.name} </p></div>)
+            }
+          </div>
+          <div>
+            {
+              unit.traits.map((t, i) =>
+                <div className='UnitInfoModalTraits' key={i}>
+                  <p>{t.name}</p><img
+                    src={t.imgUrl}
+                    className=""
+                  // onClick={action}
+                  />
+                  <span>{t.desc}</span>
+                </div>
+              )
+            }
+          </div>
+        </div>
+      </div >
+    }
+  </>)
 }
 import status_icon1 from '/assets/status_icon1.png'
 import status_icon2 from '/assets/status_icon2.png'
@@ -175,6 +251,15 @@ function Actions({ targetingUnit }: { targetingUnit: number }) {
   function lastIsItem(): boolean {
     return lasActionMenuState == "items"
   }
+  useEffect(() => {
+    if (current[0] == 0) {
+      const timer = setTimeout(() => {
+        dispatch(botStep())
+      }, 2000)
+
+      return () => { clearTimeout(timer) }
+    }
+  }, [current])
   return (
     <>
       <div className='Actions'>
@@ -245,8 +330,8 @@ function Actions({ targetingUnit }: { targetingUnit: number }) {
 
                 setMenuState("main")
               }
-            }}><p>Knight</p><img
-                src={enemy_knight}
+            }}><p>Boss</p><img
+                src={enemy_boss}
                 className=""
               // onClick={action}
               /></div>
@@ -284,6 +369,7 @@ function Actions({ targetingUnit }: { targetingUnit: number }) {
           <>
             <div className='m' onClick={() => {
               if (current[0] == 1) {
+                //&& currentUnit.traits[0].condition.type == "Activation") {
                 setId(0)
                 setMenuState("select")
               }
@@ -294,6 +380,7 @@ function Actions({ targetingUnit }: { targetingUnit: number }) {
               /></div>
             <div className='m' onClick={() => {
               if (current[0] == 1) {
+                //&& currentUnit.traits[1].condition.type == "Activation") {
                 setId(1)
                 setMenuState("select")
               }
@@ -304,6 +391,7 @@ function Actions({ targetingUnit }: { targetingUnit: number }) {
               /></div>
             <div className='m' onClick={() => {
               if (current[0] == 1) {
+                //&& currentUnit.traits[2].condition.type == "Activation") {
                 setId(2)
                 setMenuState("select")
               }
@@ -368,7 +456,7 @@ function Actions({ targetingUnit }: { targetingUnit: number }) {
         }
       </div >
       <div className='Description'>
-        <p> {currentPlyer.id == 1 && "Turn " + currentUnit.name}
+        <p> {"Turn " + currentUnit.name}
         </p>
         {actionMenuState == "traits" && lasActionMenuState == "main" && <p>Choose traite</p>}
         {actionMenuState == "items" && lasActionMenuState == "main" && <p>Choose item</p>}
@@ -380,7 +468,7 @@ function Actions({ targetingUnit }: { targetingUnit: number }) {
           lastIsItem() &&
           <p> {currentPlyer.items[id].desc}</p>
         }
-        {actionMenuState == "main" && <p>Choose action</p>}
+        {currentPlyer.id == 1 && actionMenuState == "main" && <p>Choose action</p>}
       </div>
     </>
   )
@@ -408,7 +496,7 @@ function MainMatch() {
         //onClick={action}
         />
       </Link>
-      <EnemyUnitContainer targetingUnit={handleTargetUnit} />
+      <EnemyUnitContainer />
       <img
         src={background}
         className="TopBackground"
@@ -416,7 +504,7 @@ function MainMatch() {
       />
     </div>
     <div className='BottomSide'>
-      <PlayerUnitContainer targetingUnit={handleTargetUnit} />
+      <PlayerUnitContainer />
 
       <Actions targetingUnit={targetingUnit} />
     </div >

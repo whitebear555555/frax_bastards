@@ -129,7 +129,7 @@ import ability12 from '/assets/ability12.png'
 import item1 from '/assets/item1.png'
 import item2 from '/assets/item2.png'
 import item3 from '/assets/item3.png'
-import enemy_knight from '/assets/enemy_knight.png'
+import enemy_boss from '/assets/enemy_boss.png'
 import enemy_spider from '/assets/enemy_spider.png'
 import portrait from '/assets/portrait.png'
 import portrait1 from '/assets/portrait(1).png'
@@ -263,8 +263,8 @@ export const enemy_unit_pool: Unit[] = [{
 }, {
   player_owner: 0,
   id: 1,
-  name: "Knight",
-  imgUrl: enemy_knight,
+  name: "Boss",
+  imgUrl: enemy_boss,
   healty: 200,
   mana: 150,
   animationState: "",

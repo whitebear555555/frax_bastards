@@ -1,7 +1,7 @@
 import type { Action, PayloadAction, ThunkAction } from "@reduxjs/toolkit"
-import { combineSlices, configureStore, createSlice } from "@reduxjs/toolkit"
+import { combineSlices, configureStore, createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import { setupListeners } from "@reduxjs/toolkit/query"
-import { ActionChooseUnit, ActionItem, ActionSetAnimationState, ActionTrait, Match, StatusEffect, StatusEffectType, Unit, enemy_unit_pool, item_pool, unit_pool } from "../pages/game"
+import { ActionChooseUnit, ActionItem, ActionSetAnimationState, ActionTrait, AnimationState, Match, StatusEffect, StatusEffectType, Unit, enemy_unit_pool, item_pool, unit_pool } from "../pages/game"
 import { stat } from "fs";
 import { Status } from "viem";
 import { switchAccount } from "wagmi/actions";
@@ -81,15 +81,36 @@ const initialState: Match = {
   end: false,
   winner: 0,
 }
+
 const delay = ms => new Promise(res => setTimeout(res, ms));
+export const setAnimationStateThunk = createAsyncThunk(
+  'Match/setAnimationState',
+  async function(actionAnimationState: ActionSetAnimationState, thunkAPI) {
+    thunkAPI.dispatch(setAnimationState(actionAnimationState))
+    await delay(3000)
+    thunkAPI.dispatch(setAnimationState({ state: "", ...actionAnimationState }))
+    return actionAnimationState
+  }
+)
 const matchSlice = createSlice({
   name: 'Match',
   initialState,
+  extraReducers: (builder) => {
+    // Add reducers for additional action types here, and handle loading state as needed
+    builder.addCase(setAnimationStateThunk.fulfilled, (state, payload) => {
+      const player = state.players[payload.payload.player_id]
+      const unit = player.units[payload.payload.unit_id]
+      unit.animationState = ""
+    })
+  },
   reducers: {
     setAnimationState: (state, payload: PayloadAction<ActionSetAnimationState>) => {
       const player = state.players[payload.payload.player_id]
       const unit = player.units[payload.payload.unit_id]
       unit.animationState = payload.payload.state
+      // setTimeout((unit) => {
+      //   unit.animationState = ""
+      // }, 3000)
     },
     chooseUnit: (state, payload: PayloadAction<ActionChooseUnit>) => {
       state.players[1].units = payload.payload
@@ -138,7 +159,18 @@ const matchSlice = createSlice({
             }
             target_unit.healty -= attack
             unit.mana -= trait.condition.cost
-            target_unit.animationState = "TakeDamage"
+            matchSlice.caseReducers.setAnimationState(state, {
+              type: "setAnimationState",
+              payload: { player_id: target_player.id, unit_id: target_unit.id, state: "TakeDamage" }
+            })
+
+            // setTimeout(() => {
+            // }, 1000)
+            // matchSlice.caseReducers.setAnimationState(state, {
+            //   type: "setAnimationState",
+            //   payload: { player_id: player.id, unit_id: unit.id, state: "" }
+            // })
+            //target_unit.animationState = "TakeDamage"
             break
           }
           case 'Resist': { break }
@@ -280,32 +312,55 @@ const matchSlice = createSlice({
         }
       }
 
-      const [player_id, unit_id] = state.turnOrder[state.turn]
-      if (player_id == 0) {
-        //bot
-        const unit = state.players[player_id].units[unit_id]
-        const trait = unit.traits[randomInteger(0, unit.traits.length - 3)]
-        const evaible_targets = state.players[1].units.filter((u) => u.healty > 0)
-        const targets = evaible_targets[randomInteger(0, evaible_targets.length - 1)].id
-        matchSlice.caseReducers.useTrait(state, {
-          type: "useTrait",
-          payload: {
-            player_id,
-            unit_id: unit.id,
-            trait_id: trait.id,
-            targets,
-          }
-        })
-      } else {
-        //player
-      }
+      // const [player_id, unit_id] = state.turnOrder[state.turn]
+      // if (player_id == 0) {
+      //   //bot
+      //   const unit = state.players[player_id].units[unit_id]
+      //   const trait = unit.traits[randomInteger(0, unit.traits.length - 3)]
+      //   const evaible_targets = state.players[1].units.filter((u) => u.healty > 0)
+      //   const targets = evaible_targets[randomInteger(0, evaible_targets.length - 1)].id
+      //   // setTimeout(() => {
+      //   // }, 3000)
+      //   matchSlice.caseReducers.useTrait(state, {
+      //     type: "useTrait",
+      //     payload: {
+      //       player_id,
+      //       unit_id: unit.id,
+      //       trait_id: trait.id,
+      //       targets,
+      //     }
+      //   })
+      // } else {
+      //   //player
+      // }
     },
+    botStep: (state) => {
+      //bot
+      const [player_id, unit_id] = state.turnOrder[state.turn]
+      const unit = state.players[player_id].units[unit_id]
+      const trait = unit.traits[randomInteger(0, unit.traits.length - 3)]
+      const evaible_targets = state.players[1].units.filter((u) => u.healty > 0)
+      const targets = evaible_targets[randomInteger(0, evaible_targets.length - 1)].id
+      // setTimeout(() => {
+      // }, 3000)
+      matchSlice.caseReducers.useTrait(state, {
+        type: "useTrait",
+        payload: {
+          player_id,
+          unit_id: unit.id,
+          trait_id: trait.id,
+          targets,
+        }
+      })
+
+    }
+
   },
 })
 
 //function checkWinner(state: WritableDraft<Match>) {}
 
-export const { chooseUnit, useTrait, useItem, endTurn } = matchSlice.actions
+export const { chooseUnit, useTrait, useItem, endTurn, setAnimationState, botStep } = matchSlice.actions
 // const selectCount = (state: RootState) => state.counter.value
 // counterSlice.reducer
 

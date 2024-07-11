@@ -8,12 +8,7 @@ import { useAppDispatch, useAppSelector } from '../app/hook.ts'
 import { Trait, Unit } from './game.tsx'
 import { chooseUnit } from '../app/store.ts'
 import { useState } from 'react'
-import { NavBar } from '../App.tsx'
-
-function SelectedUnits() {
-  return (<>
-  </>)
-}
+import { NavBar, PlayerUnitStatus } from '../App.tsx'
 
 export default function Menu({ unitPool }: { unitPool: Unit[] }) {
   const [unitSelected, setUnitSelected] = useState<number[]>([0, 1, 2, 3])
@@ -63,38 +58,104 @@ export default function Menu({ unitPool }: { unitPool: Unit[] }) {
     </>)
 }
 //wallet & logic
-function PlayerUnit({ unit }: { unit: Unit }) {
-  return (<div className='PlayerUnit' onClick={() => { }}>
-    <div className='Name'>{unit.name}</div>
-    <div className='HP'>{unit.healty}</div>
-    <div className='MP'>{unit.mana}</div>
+// function PlayerUnit({ unit }: { unit: Unit }) {
+//   return (<div className='PlayerUnit' onClick={() => { }}>
+//     <div className='Name'>{unit.name}</div>
+//     <div className='HP'>{unit.healty}</div>
+//     <div className='MP'>{unit.mana}</div>
+//     <img
+//       src={portrait_background}
+//       className="UnitPortraitBack"
+//     // onClick={action}
+//     />
+//     <img
+//       src={unit.imgUrl}
+//       className="UnitPortraitImg"
+//     // onClick={action}
+//     />
+//     <div className='TraitsIcon'>
+//       {
+//         unit.traits.map((t, idx) =>
+//           <TraitIcon key={idx} trait={t} />
+//         )
+//       }
+//     </div>
+//   </div>)
+// }
+function TraitIcon({ trait }: { trait: Trait }) {
+  return (<div className='TraitIcon'>
+    {/* <p>{trait.name}</p> */}
+    <img
+      src={trait.imgUrl}
+      className="MenuContainerImg"
+    // onClick={action}
+    />
+
+  </div>)
+}
+export function PlayerUnit({ unit }: { unit: Unit }) {
+  const [activeInfoModal, setAcriveInfoModal] = useState<Boolean>(false)
+  const dispatch = useAppDispatch()
+
+  return (<><div className='PlayerUnit' onClick={() => setAcriveInfoModal(true)}>
+    <p className='Name'>{unit.name}</p>
+    <p className='HP'>{unit.healty}</p>
+    <p className='MP'>{unit.mana}</p>
     <img
       src={portrait_background}
-      className="UnitPortraitBack"
+      className="UnitPortraitBack  MenuContainerImg"
     // onClick={action}
     />
     <img
       src={unit.imgUrl}
-      className="UnitPortraitImg"
+      className={"UnitPortraitImg  MenuContainerImg"}
     // onClick={action}
     />
-    <div className='TraitsIcon'>
+    <div className='TraitsIcon MenuContainerImg'>
       {
         unit.traits.map((t, idx) =>
           <TraitIcon key={idx} trait={t} />
         )
       }
     </div>
-  </div>)
+  </div>
+    {activeInfoModal &&
+      <div className='UnitInfoModal'>
+        <div className='UnitInfoModalBack'>
+          <span className="close" onClick={() => setAcriveInfoModal(false)}>&times;</span>
+          <p className='Name'>{unit.name}</p>
+          <img
+            src={unit.imgUrl}
+            className={"UnitInfoModalPortraitImg"}
+          // onClick={action}
+          />
+          <p className='HP'>{"Healty: " + unit.healty}</p>
+          <p className='MP'>{"Mana: " + unit.mana}</p>
+          <div className='UnitInfoModalStatus' >
+            {
+              unit.status.map((s, idx) =>
+                <div key={idx}>
+                  <PlayerUnitStatus statusEffectType={s.type} />
+                  <p> {s.name} </p></div>)
+            }
+          </div>
+          <div>
+            {
+              unit.traits.map((t, i) =>
+                <div className='UnitInfoModalTraits' key={i}>
+                  <p>{t.name}</p><img
+                    src={t.imgUrl}
+                    className=""
+                  // onClick={action}
+                  />
+                  <span>{t.desc}</span>
+                </div>
+              )
+            }
+          </div>
+        </div>
+      </div >
+    }
+  </>)
 }
-function TraitIcon({ trait }: { trait: Trait }) {
-  return (<div className='TraitIcon'>
-    {/* <p>{trait.name}</p> */}
-    <img
-      src={trait.imgUrl}
-      className=""
-    // onClick={action}
-    />
 
-  </div>)
-}

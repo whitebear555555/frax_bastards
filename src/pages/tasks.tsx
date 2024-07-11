@@ -10,7 +10,7 @@ export default function TaskList() {
   ]
   return (
     <div className='TaskContainer'>
-      <h2>6 task avaible</h2>
+      <h2 className='TaskH2'>6 task avaible</h2>
       <Link
         className='Task Taskh'
         to={'/wallet'}>
