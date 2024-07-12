@@ -13,14 +13,14 @@ export default function TaskList() {
       <h2 className='TaskH2'>6 task avaible</h2>
       <Link
         className='Task Taskh'
-        to={'/wallet'}>
+        to={'/create_wallet'}>
         <img
           src={tg}
           className=""
         // onClick={action}
         />
         create wallet</Link>
-      <a className='Task Taskh' href="https://t.me/frax_bastards">
+      <a className='Task Taskh' href="https://t.me/fraxstards">
         <img
           src={tg}
           className=""

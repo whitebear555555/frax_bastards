@@ -33,7 +33,7 @@ import ErrorPage from './pages/erroe-page.tsx'
 import { Link, Outlet, createBrowserRouter } from 'react-router-dom'
 import TaskList from './pages/tasks.tsx'
 import Menu from './pages/menu.tsx'
-import Wallet from './wallet/app.tsx'
+import { CreateWallet, Wallet } from './wallet/wallet.tsx'
 import FriendsList from './pages/friends.tsx'
 import { botStep, endTurn, setAnimationState, useItem, useTrait } from './app/store.ts'
 import { AnimationState, Player, StatusEffectType, Unit, unit_pool } from './pages/game.tsx'
@@ -200,6 +200,7 @@ export function PlayerUnit({ unit }: { unit: Unit }) {
 import status_icon1 from '/assets/status_icon1.png'
 import status_icon2 from '/assets/status_icon2.png'
 import status_icon3 from '/assets/status_icon3.png'
+import Shop from './shop/shop.tsx'
 
 export function PlayerUnitStatus({ statusEffectType }: { statusEffectType: StatusEffectType }) {
   const ff = () => {
@@ -560,12 +561,20 @@ const router = createBrowserRouter([
         element: <TaskList />,
       },
       {
-        path: "wallet",
-        element: <Wallet />,
+        path: "create_wallet",
+        element: <CreateWallet />,
       },
       {
         path: "friends",
         element: <FriendsList />,
+      },
+      {
+        path: "wallet",
+        element: <Wallet />,
+      },
+      {
+        path: "shop",
+        element: <Shop />,
       },
     ],
   },
