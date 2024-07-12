@@ -159,7 +159,7 @@ function NavBar() {
   return (
     <div className='ShopNavBar'>
       {
-        [[bookmar, '/menu'], [home, '/shop'], [settings, '/friends']].map((img, idx) =>
+        [[bookmar, '/shop'], [home, '/shop'], [settings, '/shop']].map((img, idx) =>
           <Link
             className='' key={idx}
             to={img[1]}>

@@ -233,7 +233,7 @@ export function NavBar() {
   return (
     <div className='WalletNavBar'>
       {
-        [[bookmar, '/wallet'], [home, '/menu'], [settings, '/friends']].map((img, idx) =>
+        [[bookmar, '/wallet'], [home, '/wallet'], [settings, '/wallet']].map((img, idx) =>
           <Link
             className='' key={idx}
             to={img[1]}>
