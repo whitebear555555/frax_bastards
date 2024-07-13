@@ -130,7 +130,7 @@
   color: red;
 }
 .SelectEnemyUnit{
-  animation: blink normal 2.15s infinite ease-in-out; 
+  animation: blink normal 2.1s infinite ease-in-out; 
 }
 
 .TakeDamage1 {
@@ -180,7 +180,7 @@
         opacity:1;
     }
     50% {
-        opacity:0.5;
+        opacity:0.2;
     }
     100% {
         opacity:1;

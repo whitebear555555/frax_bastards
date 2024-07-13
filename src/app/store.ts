@@ -200,6 +200,12 @@ const matchSlice = createSlice({
               name: "Bleeding", duration: 3, type: { type: "Bleeding" }
             }
             target_unit.status.push(eff)
+            matchSlice.caseReducers.setAnimationState(state, {
+              type: "setAnimationState",
+              payload: {
+                player_id: target_player.id, unit_id: target_unit.id, state: { type: "TakeDamage", damge: -1, trait: trait }
+              }
+            })
             break
           }
           case 'Poison': {
@@ -208,6 +214,12 @@ const matchSlice = createSlice({
               name: "Poison", duration: 3, type: { type: "Poisoned" }
             }
             target_unit.status.push(eff)
+            matchSlice.caseReducers.setAnimationState(state, {
+              type: "setAnimationState",
+              payload: {
+                player_id: target_player.id, unit_id: target_unit.id, state: { type: "TakeDamage", damge: -1, trait: trait }
+              }
+            })
             break
           }
           case 'Stun': {
@@ -216,6 +228,12 @@ const matchSlice = createSlice({
               name: "Stun", duration: 1, type: { type: "Stun" }
             }
             target_unit.status.push(eff)
+            matchSlice.caseReducers.setAnimationState(state, {
+              type: "setAnimationState",
+              payload: {
+                player_id: target_player.id, unit_id: target_unit.id, state: { type: "TakeDamage", damge: -1, trait: trait }
+              }
+            })
             break
           }
           default: break
