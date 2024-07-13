@@ -33,7 +33,6 @@
  
 }
 .TopBackground{
-  width: 100vw;
   height: 100%;
 
 }
@@ -41,6 +40,8 @@
   width: 100vw;
   height: 48vh;
   position: relative;
+  display: flex;
+  justify-content: center;
 }
 .EnemyUnitContainer{
   position: absolute;
