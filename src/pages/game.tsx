@@ -30,8 +30,9 @@ export type Player = {
   units: Unit[],
   items: Item[]
 }
+//TODO: traits[] all trait in game with unica id unit id player id 
 export type AnimationState = (
-  "" | "TakeDamage"
+  { type: "None" } | { type: "TakeDamage", damge: number, trait: Trait }
 )
 
 export type Unit = {
@@ -182,7 +183,7 @@ export const enemy_unit_pool: Unit[] = [{
   imgUrl: enemy_spider,
   healty: 100,
   mana: 100,
-  animationState: "",
+  animationState: { type: "None" },
   traits: [
     {
       id: 0,
@@ -267,7 +268,7 @@ export const enemy_unit_pool: Unit[] = [{
   imgUrl: enemy_boss,
   healty: 200,
   mana: 150,
-  animationState: "",
+  animationState: { type: "None" },
   traits: [
     {
       id: 0,
@@ -331,7 +332,7 @@ export const enemy_unit_pool: Unit[] = [{
   imgUrl: enemy_spider,
   healty: 100,
   mana: 100,
-  animationState: "",
+  animationState: { type: "None" },
   traits: [
     {
       id: 0,
@@ -421,7 +422,7 @@ export const unit_pool: Unit[] = [
     mana: 70,
     level: 3,
     exp: 20,
-    animationState: "",
+    animationState: { type: "None" },
     status: [],
     traits: [
       {
@@ -471,7 +472,7 @@ export const unit_pool: Unit[] = [
     mana: 150,
     level: 3,
     exp: 20,
-    animationState: "",
+    animationState: { type: "None" },
     status: [
       { name: "Poison", duration: 3, type: { type: 'Poisoned' } },
       { name: "Stun", duration: 3, type: { type: 'Stun' } },
@@ -525,7 +526,7 @@ export const unit_pool: Unit[] = [
     mana: 100,
     level: 3,
     exp: 20,
-    animationState: "",
+    animationState: { type: "None" },
     status: [],
     traits: [
       {
@@ -575,7 +576,7 @@ export const unit_pool: Unit[] = [
     mana: 90,
     level: 3,
     exp: 20,
-    animationState: "",
+    animationState: { type: "None" },
     status: [],
     traits: [
       {

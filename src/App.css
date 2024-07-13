@@ -111,29 +111,63 @@
   max-height: 5vh;
   min-height: 2vh;
 }
+.AnimationUnit{
+  color: white;
+  font-size: 3vh;
+  font-weight: bold;
+  text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.AnimationUnit .Damage{
+  color: red;
+}
 .SelectEnemyUnit{
-  animation: blink normal 2.2s infinite ease-in-out; 
+  animation: blink normal 2.15s infinite ease-in-out; 
 }
 
-.TakeDamage {
+.TakeDamage1 {
   animation: redblink normal 2.2s infinite ease-in-out; 
 }
-.Sprite {
-  filter: opacity(0.5) drop-shadow(0 0 0 blue);
+.None {
+  visibility: hidden;
+}
+.TakeDamage {
+  filter: opacity(1.0) drop-shadow(0 0 0 blue);
   position: absolute;
   z-index: 1;
   color: #000;
   animation-delay: 0s;
-  height: 96px;
-  width: 96px;
-  background: url("../assets/anim.png");
-  /*d*/
-  animation: sprite 0.7s steps(6) infinite;
-  transform: scale(6.5);
+  max-height: 150px;
+  max-width: 150px;
+  /*background: url("../assets/anim.png");*/
+  animation: sprite 1.0s steps(10) infinite;
+  object-fit: cover;
+  transform: scale(2.5);
 }
 @keyframes sprite {
+  from { object-position: 0px; }
+  to { object-position: -1500px; }
+}
+
+.Sprite1 {
+  filter: opacity(1.0) drop-shadow(0 0 0 blue);
+  position: absolute;
+  z-index: 1;
+  color: #000;
+  animation-delay: 0s;
+  height: 150px;
+  width: 150px;
+  background: url("../assets/anim.png");
+  /*d*/
+  animation: sprite1 1.7s steps(10) infinite;
+  transform: scale(2.5);
+}
+@keyframes sprite1 {
   from { background-position: 0px; }
-  to { background-position: -576px; }
+  to { background-position: -1500px; }
 }
 
 @keyframes blink {
@@ -141,7 +175,7 @@
         opacity:1;
     }
     50% {
-        opacity:0.4;
+        opacity:0.5;
     }
     100% {
         opacity:1;

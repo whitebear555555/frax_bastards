@@ -100,7 +100,7 @@ const matchSlice = createSlice({
     builder.addCase(setAnimationStateThunk.fulfilled, (state, payload) => {
       const player = state.players[payload.payload.player_id]
       const unit = player.units[payload.payload.unit_id]
-      unit.animationState = ""
+      unit.animationState = { type: "None" }
     })
   },
   reducers: {
@@ -161,7 +161,9 @@ const matchSlice = createSlice({
             unit.mana -= trait.condition.cost
             matchSlice.caseReducers.setAnimationState(state, {
               type: "setAnimationState",
-              payload: { player_id: target_player.id, unit_id: target_unit.id, state: "TakeDamage" }
+              payload: {
+                player_id: target_player.id, unit_id: target_unit.id, state: { type: "TakeDamage", damge: attack, trait: trait }
+              }
             })
 
             // setTimeout(() => {
@@ -184,6 +186,12 @@ const matchSlice = createSlice({
             let attack = randomInteger(trait.effect.min, trait.effect.max)
             target_unit.healty -= attack
             unit.healty += attack
+            matchSlice.caseReducers.setAnimationState(state, {
+              type: "setAnimationState",
+              payload: {
+                player_id: target_player.id, unit_id: target_unit.id, state: { type: "TakeDamage", damge: attack, trait: trait }
+              }
+            })
             break
           }
           case 'Bleeding': {

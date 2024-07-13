@@ -61,11 +61,11 @@ function EnemyUnit({ unit }: { unit: Unit }) {
   useEffect(() => {
 
     const timer = setTimeout(() => {
-      dispatch(setAnimationState({ player_id: unit.player_owner, unit_id: unit.id, state: "", }))
+      dispatch(setAnimationState({ player_id: unit.player_owner, unit_id: unit.id, state: { type: "None" }, }))
     }, 2000)
 
     return () => { clearTimeout(timer) }
-  }, [unit.animationState])
+  }, [unit.animationState.type])
   return (<div className='EnemyUnit'>
     <img
       src={unit.imgUrl}
@@ -74,10 +74,30 @@ function EnemyUnit({ unit }: { unit: Unit }) {
     />
     <img
       src={unit.imgUrl}
-      className={"EnemyUnit" + unit.name + "Img " + unit.animationState + (selectUnit[0] == unit.player_owner && selectUnit[1] == unit.id ? " SelectEnemyUnit" : null)}
+      className={"EnemyUnit" + unit.name + "Img " + (selectUnit[0] == unit.player_owner && selectUnit[1] == unit.id ? " SelectEnemyUnit" : null)}
     // onClick={action}
-
     />
+    {/* <img */}
+    {/*   src={anim} */}
+    {/*   className={"EnemyUnit" + unit.name + "Img " + unit.animationState.type} */}
+    {/* // onClick={action} */}
+    {/* /> */}
+    {
+      unit.animationState.type == "TakeDamage" &&
+      <div className={"EnemyUnit" + unit.name + "Img AnimationUnit"} >
+        <img
+          src={anim}
+          className={"EnemyUnit" + unit.name + "Img TakeDamage"}
+        // onClick={action}
+        />
+        <p className={"Damage"}>{unit.animationState.damge}</p>
+        <img
+          src={unit.animationState.trait.imgUrl}
+        // onClick={action}
+        />
+        <p>{unit.animationState.trait.name}</p>
+      </div>
+    }
     <div className='UnitStatusDecs'>
       <p className={"UnitStatus" + " Re" + unit.name}> {unit.name}</p>
       <p className={"UnitStatus" + " Re" + unit.name}> {unit.healty + "/" + unit.mana}</p>
@@ -88,7 +108,7 @@ function EnemyUnit({ unit }: { unit: Unit }) {
         }
       </div>
     </div>
-  </div>)
+  </div >)
 }
 // function EnemyUnitContainer() {
 //   return (
@@ -129,11 +149,11 @@ export function PlayerUnit({ unit }: { unit: Unit }) {
   useEffect(() => {
 
     const timer = setTimeout(() => {
-      dispatch(setAnimationState({ player_id: unit.player_owner, unit_id: unit.id, state: "", }))
+      dispatch(setAnimationState({ player_id: unit.player_owner, unit_id: unit.id, state: { type: "None" }, }))
     }, 2000)
 
     return () => { clearTimeout(timer) }
-  }, [unit.animationState])
+  }, [unit.animationState.type])
   return (<><div className='PlayerUnit' onClick={() => setAcriveInfoModal(true)}>
     <div className='PlayerUnitStatus' >
       {
@@ -154,9 +174,31 @@ export function PlayerUnit({ unit }: { unit: Unit }) {
     ></div>
     <img
       src={unit.imgUrl}
-      className={"UnitPortraitImg " + unit.animationState + (selectUnit[0] == unit.player_owner && selectUnit[1] == unit.id ? " SelectEnemyUnit" : null)}
+      className={"UnitPortraitImg " + (selectUnit[0] == unit.player_owner && selectUnit[1] == unit.id ? " SelectEnemyUnit" : null)}
     // onClick={action}
     />
+    <img
+      src={anim}
+      //className={"UnitPortraitImg " + "TakeDamage"} todo: fixed scale > max-widht: 150px
+      className={"UnitPortraitImg " + unit.animationState.type}
+    // onClick={action}
+    />
+    {
+      unit.animationState.type == "TakeDamage" &&
+      <div className={"UnitPortraitImg  AnimationUnit"} >
+        <img
+          src={anim}
+          className={"UnitPortraitImg TakeDamage"}
+        // onClick={action}
+        />
+        <p className={"Damage"}>{unit.animationState.damge}</p>
+        <img
+          src={unit.animationState.trait.imgUrl}
+        // onClick={action}
+        />
+        <p>{unit.animationState.trait.name}</p>
+      </div>
+    }
   </div>
     {activeInfoModal &&
       <div className='UnitInfoModal'>
@@ -285,8 +327,10 @@ function Actions({ targetingUnit }: { targetingUnit: number }) {
               // onClick={action}
               /></div>
             <div className='m' onClick={() => {
-              setMenuState("main")
-              dispatch(endTurn())
+              if (current[0] == 1) {
+                setMenuState("main")
+                dispatch(endTurn())
+              }
             }}><p>{"End Turn"}</p><img
                 src={useend}
                 className=""
@@ -403,7 +447,6 @@ function Actions({ targetingUnit }: { targetingUnit: number }) {
               /></div>
             <div className='m' onClick={() => {
               setMenuState("main")
-              dispatch(endTurn())
             }}> <p>Back</p>
               <img
                 src={useback}
@@ -446,7 +489,6 @@ function Actions({ targetingUnit }: { targetingUnit: number }) {
               /></div>
             <div className='m' onClick={() => {
               setMenuState("main")
-              dispatch(endTurn())
             }}> <p>Back</p>
               <img
                 src={useback}
@@ -475,6 +517,7 @@ function Actions({ targetingUnit }: { targetingUnit: number }) {
   )
 }
 
+import backkk from '/assets/backkk.mp4'
 function MainMatch() {
   const current = useAppSelector((state) => state.match.turnOrder[state.match.turn])
   const currentPlyer = useAppSelector((state) => state.match.players[state.match.turnOrder[state.match.turn][0]])
@@ -498,9 +541,12 @@ function MainMatch() {
         />
       </Link>
       <EnemyUnitContainer />
-      <img
-        src={background}
+      <video
+        src={backkk}
         className="TopBackground"
+        autoPlay={true}
+        loop={true}
+        muted
       // onClick={action}
       />
     </div>
