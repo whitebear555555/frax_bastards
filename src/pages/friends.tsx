@@ -17,6 +17,7 @@ export default function FriendsList() {
             <h2>{WebApp.initDataUnsafe.user.username}</h2>
             <img
               src={WebApp.initDataUnsafe.user.photo_url}
+              alt={tg_avatar}
             />
           </>
         }

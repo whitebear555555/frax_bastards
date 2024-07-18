@@ -30,6 +30,7 @@
   right: 0.5vw;
   min-width: 30px;
   min-height: 30px;
+  filter: contrast(0%) brightness(2);
  
 }
 .TopBackground{
@@ -110,11 +111,32 @@
   min-height: 2vh;
 }
 
-
 .EnemyUnitStatus img{
   max-width: 5vw;
   max-height: 5vh;
   min-height: 2vh;
+}
+
+.Shake {
+  /* Запустите анимацию встряхивания и сделайте так, чтобы анимация длилась 0,5 секунды */
+  animation: shake 0.5s;
+
+  /* Когда анимация будет закончена, начните снова */
+  animation-iteration-count: infinite;
+}
+
+@keyframes shake {
+  0% { transform: translate(1px, 1px) rotate(0deg); }
+  10% { transform: translate(-1px, -2px) rotate(-1deg); }
+  20% { transform: translate(-3px, 0px) rotate(1deg); }
+  30% { transform: translate(3px, 2px) rotate(0deg); }
+  40% { transform: translate(1px, -1px) rotate(1deg); }
+  50% { transform: translate(-1px, 2px) rotate(-1deg); }
+  60% { transform: translate(-3px, 1px) rotate(0deg); }
+  70% { transform: translate(3px, 1px) rotate(-1deg); }
+  80% { transform: translate(-1px, -1px) rotate(1deg); }
+  90% { transform: translate(1px, 2px) rotate(0deg); }
+  100% { transform: translate(1px, -2px) rotate(-1deg); }
 }
 .AnimationUnit{
   color: white;
@@ -138,6 +160,19 @@
 }
 .None {
   visibility: hidden;
+}
+.Heal {
+  filter: opacity(1.0) drop-shadow(0 0 0 blue);
+  position: absolute;
+  z-index: 1;
+  color: #000;
+  animation-delay: 0s;
+  max-height: 150px;
+  max-width: 150px;
+  /*background: url("../assets/anim.png");*/
+  animation: sprite 1.0s steps(10) infinite;
+  object-fit: cover;
+  transform: scale(2.5);
 }
 .TakeDamage {
   filter: opacity(1.0) drop-shadow(0 0 0 blue);
@@ -321,7 +356,6 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  color: white;
   font-size:2vh;
   font-weight: bold;
 }
@@ -330,10 +364,8 @@
   /*bottom: 0;*/
   /*width: 20vw;*/
   /*height: 30vh;*/
-  width: 100%;
   height: 100%;
 
-  height: 80%;
   width: 80%;
   flex-grow: 1;
   position: relative;
@@ -409,7 +441,7 @@
   flex-flow: row nowrap;
   min-height: 12vh;
 
-  font-size: 2.5vh;
+  font-size: 2.3vh;
 }
 .Actions .m{
   display: flex;

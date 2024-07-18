@@ -1,7 +1,7 @@
 import type { Action, PayloadAction, ThunkAction } from "@reduxjs/toolkit"
 import { combineSlices, configureStore, createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import { setupListeners } from "@reduxjs/toolkit/query"
-import { ActionChooseUnit, ActionItem, ActionSetAnimationState, ActionTrait, AnimationState, Match, StatusEffect, StatusEffectType, Unit, enemy_unit_pool, item_pool, unit_pool } from "../pages/game"
+import { ActionChooseUnit, ActionItem, ActionSetAnimationState, ActionTrait, AnimationState, Match, StatusEffect, StatusEffectType, Trait, Unit, enemy_unit_pool, item_pool, unit_pool } from "../pages/game"
 import { stat } from "fs";
 import { Status } from "viem";
 import { switchAccount } from "wagmi/actions";
@@ -177,8 +177,17 @@ const matchSlice = createSlice({
           }
           case 'Resist': { break }
           case 'Heal': {
-            unit.healty += randomInteger(trait.effect.min, trait.effect.max)
+            const target_unit = target_player.units[payload.payload.targets]
             //add mana consuming
+            const heal = randomInteger(trait.effect.min, trait.effect.max)
+            target_unit.healty += heal
+            matchSlice.caseReducers.setAnimationState(state, {
+              type: "setAnimationState",
+              payload: {
+                //add heal animation
+                player_id: 1, unit_id: target_unit.id, state: { type: "TakeDamage", damge: heal, trait: trait }
+              }
+            })
             break
           }
           case 'Vampirism': {
@@ -254,6 +263,65 @@ const matchSlice = createSlice({
       matchSlice.caseReducers.endTurn(state)
     },
     useItem: (state, payload: PayloadAction<ActionItem>) => {
+      ////if have count use
+      //const player = state.players[payload.payload.player_id]
+      const player = state.players[1]
+      const item = player.items[payload.payload.item_id]
+      //if (trait.condition.type == "Activation" && unit.mana >= trait.condition.cost) {
+      //}
+
+      const target_player = state.players[payload.payload.player_id == 0 ? 1 : 0]
+      switch (item.effect.type) {
+        case 'Attack': {
+          const target_unit = target_player.units[payload.payload.targets]
+          let attack = randomInteger(item.effect.min, item.effect.max)
+          let have_resist = false
+          for (let j = 0; j < target_unit.traits.length; j++) {
+            const target_trait = target_unit.traits[j]
+            if ("Resist" == target_trait.effect.type) {
+              if (item.effect.color.type == target_trait.effect.color.type) {
+                have_resist = true
+                const resist = randomInteger(target_trait.effect.min, target_trait.effect.max)
+                if (resist < attack) {
+                  attack = resist - attack
+                } else { attack = 0 }
+              }
+            }
+          }
+          target_unit.healty -= attack
+          //unit.mana -= item.condition.cost
+          matchSlice.caseReducers.setAnimationState(state, {
+            type: "setAnimationState",
+            payload: {
+              player_id: target_player.id, unit_id: target_unit.id, state: { type: "TakeDamage", damge: attack, trait: item as Trait }
+            }
+          })
+
+          // setTimeout(() => {
+          // }, 1000)
+          // matchSlice.caseReducers.setAnimationState(state, {
+          //   type: "setAnimationState",
+          //   payload: { player_id: player.id, unit_id: unit.id, state: "" }
+          // })
+          //target_unit.animationState = "TakeDamage"
+          break
+        }
+        case 'Heal': {
+          const target_unit = state.players[1].units[payload.payload.targets]
+          //const item = state.players[0].items[1]
+          const heal = randomInteger(item.effect.min, item.effect.max)
+          target_unit.healty += heal
+          //add mana consuming
+          matchSlice.caseReducers.setAnimationState(state, {
+            type: "setAnimationState",
+            payload: {
+              //add heal animation
+              player_id: 1, unit_id: target_unit.id, state: { type: "TakeDamage", damge: heal, trait: item as Trait }
+            }
+          })
+          break
+        }
+      }
       //check win
       if (state.players[1].units.filter((u) => u.healty > 0).length <= 0) {
         state.end = true

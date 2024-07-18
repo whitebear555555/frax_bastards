@@ -56,6 +56,7 @@ function EnemyUnitContainer() {
 }
 //function EnemyUnit({ type, imgUrl }: { type: string, imgUrl: string }) {
 function EnemyUnit({ unit }: { unit: Unit }) {
+  const [activeInfoModal, setAcriveInfoModal] = useState<Boolean>(false)
   const selectUnit = useAppSelector((state) => state.match.turnOrder[state.match.turn])
   const dispatch = useAppDispatch()
   useEffect(() => {
@@ -66,22 +67,17 @@ function EnemyUnit({ unit }: { unit: Unit }) {
 
     return () => { clearTimeout(timer) }
   }, [unit.animationState.type])
-  return (<div className='EnemyUnit'>
+  return (<><div className='EnemyUnit'>
     <img
       src={unit.imgUrl}
-      className={"EnemyUnit" + unit.name + "Img EnemyUnitImgBack"}
+      className={"EnemyUnit" + unit.name + "Img EnemyUnitImgBack "}
     // onClick={action}
     />
     <img
       src={unit.imgUrl}
-      className={"EnemyUnit" + unit.name + "Img " + (selectUnit[0] == unit.player_owner && selectUnit[1] == unit.id ? " SelectEnemyUnit" : null)}
+      className={"EnemyUnit" + unit.name + "Img " + (unit.animationState.type == "TakeDamage" ? "Shake" : (selectUnit[0] == unit.player_owner && selectUnit[1] == unit.id ? "SelectEnemyUnit" : ""))}
     // onClick={action}
     />
-    {/* <img */}
-    {/*   src={anim} */}
-    {/*   className={"EnemyUnit" + unit.name + "Img " + unit.animationState.type} */}
-    {/* // onClick={action} */}
-    {/* /> */}
     {
       unit.animationState.type == "TakeDamage" &&
       <div className={"EnemyUnit" + unit.name + "Img AnimationUnit"} >
@@ -108,7 +104,47 @@ function EnemyUnit({ unit }: { unit: Unit }) {
         }
       </div>
     </div>
-  </div >)
+  </div >
+    {
+      activeInfoModal &&
+      <div className='UnitInfoModal'>
+        <div className='UnitInfoModalBack'>
+          <span className="close" onClick={() => setAcriveInfoModal(false)}>&times;</span>
+          <p className='Name'>{unit.name}</p>
+          <img
+            src={unit.imgUrl}
+            className={"UnitInfoModalPortraitImg"}
+          // onClick={action}
+          />
+          <p className='HP'>{"Healty: " + unit.healty}</p>
+          <p className='MP'>{"Mana: " + unit.mana}</p>
+          <div className='UnitInfoModalStatus' >
+            {
+              unit.status.map((s, idx) =>
+                <div key={idx}>
+                  <PlayerUnitStatus statusEffectType={s.type} />
+                  <p> {s.name} </p></div>)
+            }
+          </div>
+          <div>
+            {
+              unit.traits.map((t, i) =>
+                <div className='UnitInfoModalTraits' key={i}>
+                  <p>{t.name}</p><img
+                    src={t.imgUrl}
+                    className=""
+                  // onClick={action}
+                  />
+                  <span>{t.desc}</span>
+                </div>
+              )
+            }
+          </div>
+        </div>
+      </div >
+    }
+  </>
+  )
 }
 // function EnemyUnitContainer() {
 //   return (
@@ -180,7 +216,7 @@ export function PlayerUnit({ unit }: { unit: Unit }) {
     <img
       src={anim}
       //className={"UnitPortraitImg " + "TakeDamage"} todo: fixed scale > max-widht: 150px
-      className={"UnitPortraitImg " + unit.animationState.type}
+      className={(unit.animationState.type == "TakeDamage" ? "Shake" : "") + "UnitPortraitImg " + unit.animationState.type}
     // onClick={action}
     />
     {
@@ -275,7 +311,7 @@ function Selection({ is_trait, player_id, unit_id, id }: { is_trait: boolean, pl
   return (<>
   </>)
 }
-type ActionMenuState = "main" | "traits" | "items" | "select"
+type ActionMenuState = "main" | "traits" | "items" | "select" | "selectAlied"
 function Actions({ targetingUnit }: { targetingUnit: number }) {
   const [id, setId] = useState<number>(0)
   const [lasActionMenuState, setLastActionMenuState] = useState<ActionMenuState>("main")
@@ -336,6 +372,99 @@ function Actions({ targetingUnit }: { targetingUnit: number }) {
                 className=""
               // onClick={action}
               /></div></>}
+        {actionMenuState == "selectAlied" &&
+          <>
+            <div className='m' onClick={() => {
+              if (current[0] == 1) {
+                lastIsTrait() ?
+                  dispatch(useTrait({
+                    player_id: current[0],
+                    unit_id: current[1],
+                    trait_id: id,
+                    targets: 0,
+                  })) : dispatch(useItem({
+                    player_id: current[0],
+                    item_id: id,
+                    targets: 0,
+                  }))
+                setMenuState("main")
+
+              }
+            }}><p>{currentPlyer.units[0].name}</p><img
+                src={currentPlyer.units[0].imgUrl}
+                className=""
+              // onClick={action}
+              /></div>
+            <div className='m' onClick={() => {
+              if (current[0] == 1) {
+                lastIsTrait() ?
+                  dispatch(useTrait({
+                    player_id: current[0],
+                    unit_id: current[1],
+                    trait_id: id,
+                    targets: 1,
+                  })) : dispatch(useItem({
+                    player_id: current[0],
+                    item_id: id,
+                    targets: 1,
+                  }))
+
+                setMenuState("main")
+              }
+            }}><p>{currentPlyer.units[1].name}</p><img
+                src={currentPlyer.units[1].imgUrl}
+              // onClick={action}
+              /></div>
+            <div className='m' onClick={() => {
+              if (current[0] == 1) {
+                lastIsTrait() ?
+                  dispatch(useTrait({
+                    player_id: current[0],
+                    unit_id: current[1],
+                    trait_id: id,
+                    targets: 2,
+                  })) : dispatch(useItem({
+                    player_id: current[0],
+                    item_id: id,
+                    targets: 2,
+                  }))
+
+                setMenuState("main")
+              }
+            }}><p>{currentPlyer.units[2].name}</p><img
+                src={currentPlyer.units[2].imgUrl}
+              // onClick={action}
+              /></div>
+            <div className='m' onClick={() => {
+              if (current[0] == 1) {
+                lastIsTrait() ?
+                  dispatch(useTrait({
+                    player_id: current[0],
+                    unit_id: current[1],
+                    trait_id: id,
+                    targets: 3,
+                  })) : dispatch(useItem({
+                    player_id: current[0],
+                    item_id: id,
+                    targets: 3,
+                  }))
+
+                setMenuState("main")
+              }
+            }}><p>{currentPlyer.units[3].name}</p><img
+                src={currentPlyer.units[3].imgUrl}
+              // onClick={action}
+              /></div>
+            <div className='m' onClick={() => setMenuState("main")}> <p>Back</p>
+              <img
+                src={useback}
+                className=""
+              // onClick={action}
+              />
+            </div>
+          </>
+        }
+
         {actionMenuState == "select" &&
           <>
             <div className='m' onClick={() => {
@@ -416,7 +545,9 @@ function Actions({ targetingUnit }: { targetingUnit: number }) {
               if (current[0] == 1) {
                 //&& currentUnit.traits[0].condition.type == "Activation") {
                 setId(0)
-                setMenuState("select")
+                currentUnit.traits[0].target.type == "Aliade" ?
+                  setMenuState("selectAlied") :
+                  setMenuState("select")
               }
             }}><p>{currentUnit.traits[0].name}</p><img
                 src={currentUnit.traits[0].imgUrl}
@@ -427,7 +558,9 @@ function Actions({ targetingUnit }: { targetingUnit: number }) {
               if (current[0] == 1) {
                 //&& currentUnit.traits[1].condition.type == "Activation") {
                 setId(1)
-                setMenuState("select")
+                currentUnit.traits[1].target.type == "Aliade" ?
+                  setMenuState("selectAlied") :
+                  setMenuState("select")
               }
             }}><p>{currentUnit.traits[1].name}</p><img
                 src={currentUnit.traits[1].imgUrl}
@@ -438,7 +571,9 @@ function Actions({ targetingUnit }: { targetingUnit: number }) {
               if (current[0] == 1) {
                 //&& currentUnit.traits[2].condition.type == "Activation") {
                 setId(2)
-                setMenuState("select")
+                currentUnit.traits[2].target.type == "Aliade" ?
+                  setMenuState("selectAlied") :
+                  setMenuState("select")
               }
             }}><p>{currentUnit.traits[2].name}</p><img
                 src={currentUnit.traits[2].imgUrl}
@@ -460,7 +595,9 @@ function Actions({ targetingUnit }: { targetingUnit: number }) {
             <div className='m' onClick={() => {
               if (current[0] == 1) {
                 setId(0)
-                setMenuState("select")
+                currentPlyer.items[0].target.type == "Aliade" ?
+                  setMenuState("selectAlied") :
+                  setMenuState("select")
               }
             }}><p>{currentPlyer.items[0].name}</p><img
                 src={currentPlyer.items[0].imgUrl}
@@ -470,7 +607,9 @@ function Actions({ targetingUnit }: { targetingUnit: number }) {
             <div className='m' onClick={() => {
               if (current[0] == 1) {
                 setId(1)
-                setMenuState("select")
+                currentPlyer.items[1].target.type == "Aliade" ?
+                  setMenuState("selectAlied") :
+                  setMenuState("select")
               }
             }}><p>{currentPlyer.items[1].name}</p><img
                 src={currentPlyer.items[1].imgUrl}
@@ -480,7 +619,9 @@ function Actions({ targetingUnit }: { targetingUnit: number }) {
             <div className='m' onClick={() => {
               if (current[0] == 1) {
                 setId(2)
-                setMenuState("select")
+                currentPlyer.items[2].target.type == "Aliade" ?
+                  setMenuState("selectAlied") :
+                  setMenuState("select")
               }
             }}><p>{currentPlyer.items[2].name}</p><img
                 src={currentPlyer.items[2].imgUrl}

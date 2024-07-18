@@ -32,7 +32,7 @@ export type Player = {
 }
 //TODO: traits[] all trait in game with unica id unit id player id 
 export type AnimationState = (
-  { type: "None" } | { type: "TakeDamage", damge: number, trait: Trait }
+  { type: "None" } | { type: "TakeDamage", damge: number, trait: Trait } | { type: "Heal", damge: number, trait: Trait }
 )
 
 export type Unit = {
@@ -160,7 +160,7 @@ export const item_pool: Item[] = [
     rarity: {
       type: "Common"
     },
-    target: { type: "Self" },
+    target: { type: "Aliade" },
     effect: { type: "Heal", min: 5, max: 10 }
   },
   {
@@ -172,8 +172,9 @@ export const item_pool: Item[] = [
     rarity: {
       type: "Common"
     },
-    target: { type: "Self" },
-    effect: { type: "Dispoisen", }
+    target: { type: "Aliade" },
+    effect: { type: "Heal", min: 5, max: 10 }
+    /*effect: { type: "Dispoisen", }*/
   },
 ]
 export const enemy_unit_pool: Unit[] = [{
@@ -439,18 +440,6 @@ export const unit_pool: Unit[] = [
       },
       {
         id: 1,
-        name: "Water Resist",
-        desc: "block 3-5 blue damage when taking damage",
-        imgUrl: ability7,
-        condition: { type: "TakeDamage" },
-        rarity: {
-          type: "Common"
-        },
-        target: { type: "Self" },
-        effect: { type: "Resist", color: { type: "Blue" }, min: 3, max: 5 }
-      },
-      {
-        id: 2,
         name: "Stun Punch",
         imgUrl: ability4,
         desc: "Activate (cost 12): Stuns the target",
@@ -460,6 +449,30 @@ export const unit_pool: Unit[] = [
         },
         target: { type: "Enemy" },
         effect: { type: "Stun" }
+      },
+      {
+        id: 2,
+        name: "Bleeding",
+        desc: "Activate (cost 7): Causes bleeding on the target",
+        imgUrl: ability12,
+        condition: { type: "Activation", cost: 7 },
+        rarity: {
+          type: "Rare"
+        },
+        target: { type: "Enemy" },
+        effect: { type: "Bleeding", color: { type: "Green" }, min: 1, max: 5 }
+      },
+      {
+        id: 3,
+        name: "Water Resist",
+        desc: "block 3-5 blue damage when taking damage",
+        imgUrl: ability7,
+        condition: { type: "TakeDamage" },
+        rarity: {
+          type: "Common"
+        },
+        target: { type: "Self" },
+        effect: { type: "Resist", color: { type: "Blue" }, min: 3, max: 5 }
       },
     ]
   },
@@ -505,6 +518,18 @@ export const unit_pool: Unit[] = [
       },
       {
         id: 2,
+        name: "Earth Punch",
+        desc: "Activate (cost 7): Deal 5-10 green damage",
+        imgUrl: ability3,
+        condition: { type: "Activation", cost: 7 },
+        rarity: {
+          type: "Rare"
+        },
+        target: { type: "Enemy" },
+        effect: { type: "Attack", color: { type: "Green" }, min: 5, max: 10 }
+      },
+      {
+        id: 3,
         name: "Fire Resist",
         desc: "block 1-5 red damage when taking damage",
         imgUrl: ability6,
@@ -538,11 +563,35 @@ export const unit_pool: Unit[] = [
         rarity: {
           type: "Rare"
         },
-        target: { type: "Aliade" },
+        target: { type: "Enemy" },
         effect: { type: "Bleeding", color: { type: "Green" }, min: 1, max: 5 }
       },
       {
         id: 1,
+        name: "Poison Punch",
+        desc: "Activate (cost 6): Poisons targets",
+        imgUrl: ability5,
+        condition: { type: "Activation", cost: 6 },
+        rarity: {
+          type: "Common"
+        },
+        target: { type: "Enemy" },
+        effect: { type: "Poison", min: 1, max: 3 }
+      },
+      {
+        id: 2,
+        name: "Water Punch",
+        desc: "Activate (cost 4): Deal 2-4 blue damage",
+        imgUrl: ability2,
+        condition: { type: "Activation", cost: 4 },
+        rarity: {
+          type: "Common"
+        },
+        target: { type: "Enemy" },
+        effect: { type: "Attack", color: { type: "Blue" }, min: 2, max: 4 }
+      },
+      {
+        id: 3,
         name: "Earth Resist",
         desc: "block 3-6 green damage when taking damage",
         imgUrl: ability8,
@@ -552,18 +601,6 @@ export const unit_pool: Unit[] = [
         },
         target: { type: "Self" },
         effect: { type: "Resist", color: { type: "Green" }, min: 3, max: 6 }
-      },
-      {
-        id: 2,
-        name: "Posion Punch",
-        desc: "Activate (cost 6): Poisons targets",
-        imgUrl: ability5,
-        condition: { type: "Activation", cost: 6 },
-        rarity: {
-          type: "Common"
-        },
-        target: { type: "Enemy" },
-        effect: { type: "Poison", min: 1, max: 3 }
       },
     ]
   },
@@ -581,6 +618,30 @@ export const unit_pool: Unit[] = [
     traits: [
       {
         id: 0,
+        name: "Earth Punch",
+        desc: "Activate (cost 7): Deal 5-10 green damage",
+        imgUrl: ability3,
+        condition: { type: "Activation", cost: 7 },
+        rarity: {
+          type: "Rare"
+        },
+        target: { type: "Enemy" },
+        effect: { type: "Attack", color: { type: "Green" }, min: 5, max: 10 }
+      },
+      {
+        id: 1,
+        name: "Vampirism",
+        imgUrl: ability12,
+        desc: "Activate (cost 9): Steal HP on the target",
+        condition: { type: "Activation", cost: 9 },
+        rarity: {
+          type: "Mythical"
+        },
+        target: { type: "All" },
+        effect: { type: "Vampirism", min: 1, max: 7 }
+      },
+      {
+        id: 2,
         imgUrl: ability1,
         name: "Fire Punch",
         desc: "Activate (cost 2): Deal 1-5 red damage",
@@ -590,30 +651,6 @@ export const unit_pool: Unit[] = [
         },
         target: { type: "Enemy" },
         effect: { type: "Attack", color: { type: "Red" }, min: 1, max: 5 }
-      },
-      {
-        id: 1,
-        name: "Bleeding",
-        imgUrl: ability12,
-        desc: "Activate (cost 7): Causes bleeding on the target",
-        condition: { type: "Activation", cost: 7 },
-        rarity: {
-          type: "Rare"
-        },
-        target: { type: "Aliade" },
-        effect: { type: "Bleeding", color: { type: "Green" }, min: 1, max: 5 }
-      },
-      {
-        id: 2,
-        name: "Stun Punch",
-        desc: "Activate (cost 12): Stuns the target",
-        imgUrl: ability4,
-        condition: { type: "Activation", cost: 12 },
-        rarity: {
-          type: "Common"
-        },
-        target: { type: "Enemy" },
-        effect: { type: "Stun" }
       },
     ]
   },

@@ -26,7 +26,15 @@ export default function TaskList() {
           className=""
         // onClick={action}
         />
-        join telegram</a>
+        join our telegram</a>
+      <a className='Task Taskh' href="https://t.me/fraxfinance">
+        <img
+          src={tg}
+          className=""
+        // onClick={action}
+        />
+        join fraxfinance</a>
+
       {
         question.map((item, idx) =>
           <TaskBottom key={idx} {...item} />
