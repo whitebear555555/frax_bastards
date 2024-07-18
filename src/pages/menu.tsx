@@ -9,6 +9,7 @@ import { Trait, Unit } from './game.tsx'
 import { chooseUnit } from '../app/store.ts'
 import { useState } from 'react'
 import { NavBar, PlayerUnitStatus } from '../App.tsx'
+import WebApp from '@twa-dev/sdk'
 
 export default function Menu({ unitPool }: { unitPool: Unit[] }) {
   const [unitSelected, setUnitSelected] = useState<number[]>([0, 1, 2, 3])

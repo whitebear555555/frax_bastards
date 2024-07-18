@@ -1,3 +1,4 @@
+import WebApp from '@twa-dev/sdk'
 import { NavBar } from '../App'
 import tg_avatar from '/assets/tg_avatar.png'
 export default function FriendsList() {
@@ -11,6 +12,8 @@ export default function FriendsList() {
   return (
     <>
       <div className='FriendsContainer'>
+        {WebApp?.initDataUnsafe?.user?.username &&
+          <h2>WebApp.initDataUnsafe.user.username</h2>}
         <h2 className=''>5 friends</h2>
         <p className=''>(referrals information)</p>
         {

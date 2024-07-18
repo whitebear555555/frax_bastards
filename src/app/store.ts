@@ -203,7 +203,7 @@ const matchSlice = createSlice({
             matchSlice.caseReducers.setAnimationState(state, {
               type: "setAnimationState",
               payload: {
-                player_id: target_player.id, unit_id: target_unit.id, state: { type: "TakeDamage", damge: -1, trait: trait }
+                player_id: target_player.id, unit_id: target_unit.id, state: { type: "TakeDamage", damge: 1, trait: trait }
               }
             })
             break
@@ -217,7 +217,7 @@ const matchSlice = createSlice({
             matchSlice.caseReducers.setAnimationState(state, {
               type: "setAnimationState",
               payload: {
-                player_id: target_player.id, unit_id: target_unit.id, state: { type: "TakeDamage", damge: -1, trait: trait }
+                player_id: target_player.id, unit_id: target_unit.id, state: { type: "TakeDamage", damge: 1, trait: trait }
               }
             })
             break
@@ -231,7 +231,7 @@ const matchSlice = createSlice({
             matchSlice.caseReducers.setAnimationState(state, {
               type: "setAnimationState",
               payload: {
-                player_id: target_player.id, unit_id: target_unit.id, state: { type: "TakeDamage", damge: -1, trait: trait }
+                player_id: target_player.id, unit_id: target_unit.id, state: { type: "TakeDamage", damge: 1, trait: trait }
               }
             })
             break
