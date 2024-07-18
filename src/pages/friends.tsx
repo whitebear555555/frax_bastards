@@ -13,7 +13,13 @@ export default function FriendsList() {
     <>
       <div className='FriendsContainer'>
         {WebApp?.initDataUnsafe?.user?.username &&
-          <h2>WebApp.initDataUnsafe.user.username</h2>}
+          <>
+            <h2>{WebApp.initDataUnsafe.user.username}</h2>
+            <img
+              src={WebApp.initDataUnsafe.user.photo_url}
+            />
+          </>
+        }
         <h2 className=''>5 friends</h2>
         <p className=''>(referrals information)</p>
         {
