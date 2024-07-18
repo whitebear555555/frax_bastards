@@ -30,7 +30,8 @@
   right: 0.5vw;
   min-width: 30px;
   min-height: 30px;
-  filter: contrast(0%) brightness(2);
+  
+  /*filter: contrast(0%) brightness(2);*/
  
 }
 .TopBackground{
