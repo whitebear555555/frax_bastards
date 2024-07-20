@@ -115,7 +115,8 @@ export function PlayerUnit({ unit }: { unit: Unit }) {
     <div className='TraitsIcon MenuContainerImg'>
       {
         unit.traits.map((t, idx) =>
-          <TraitIcon key={idx} trait={t} />
+          idx == 3 ? null :
+            <TraitIcon key={idx} trait={t} />
         )
       }
     </div>
