@@ -39,7 +39,7 @@ import { botStep, endTurn, setAnimationState, useItem, useTrait } from './app/st
 import { AnimationState, Player, StatusEffectType, Unit, unit_pool } from './pages/game.tsx'
 import anim from "/assets/anim.png"
 
-function EnemyUnitContainer() {
+function EnemyUnitContainer({ selectUnit }: { selectUnit: (playerId: number, id: number) => void }) {
   const player = useAppSelector((state) => state.match.players[0])
   return (
     <div className='EnemyUnitContainer'>
@@ -48,26 +48,24 @@ function EnemyUnitContainer() {
       {/*   className={"TakeDamage"} */}
       {/* // onClick={action} */}
       {/* /> */}
-      <EnemyUnit unit={player.units[0]} />
-      <EnemyUnit unit={player.units[1]} />
-      <EnemyUnit unit={player.units[2]} />
+      <EnemyUnit unit={player.units[0]} selectUnit={selectUnit} />
+      <EnemyUnit unit={player.units[1]} selectUnit={selectUnit} />
+      <EnemyUnit unit={player.units[2]} selectUnit={selectUnit} />
     </div>
   )
 }
 //function EnemyUnit({ type, imgUrl }: { type: string, imgUrl: string }) {
-function EnemyUnit({ unit }: { unit: Unit }) {
-  const [activeInfoModal, setAcriveInfoModal] = useState<Boolean>(false)
-  const selectUnit = useAppSelector((state) => state.match.turnOrder[state.match.turn])
+function EnemyUnit({ unit, selectUnit }: { unit: Unit, selectUnit: (playerId: number, id: number) => void }) {
+  const currentUnit = useAppSelector((state) => state.match.turnOrder[state.match.turn])
   const dispatch = useAppDispatch()
   useEffect(() => {
-
     const timer = setTimeout(() => {
       dispatch(setAnimationState({ player_id: unit.player_owner, unit_id: unit.id, state: { type: "None" }, }))
     }, 2000)
 
     return () => { clearTimeout(timer) }
   }, [unit.animationState.type])
-  return (<><div className='EnemyUnit'>
+  return (<><div className='EnemyUnit' onClick={() => selectUnit(unit.player_owner, unit.id)}>
     <img
       src={unit.imgUrl}
       className={"EnemyUnit" + unit.name + "Img EnemyUnitImgBack "}
@@ -105,44 +103,6 @@ function EnemyUnit({ unit }: { unit: Unit }) {
       </div>
     </div>
   </div >
-    {
-      activeInfoModal &&
-      <div className='UnitInfoModal'>
-        <div className='UnitInfoModalBack'>
-          <span className="close" onClick={() => setAcriveInfoModal(false)}>&times;</span>
-          <p className='Name'>{unit.name}</p>
-          <img
-            src={unit.imgUrl}
-            className={"UnitInfoModalPortraitImg"}
-          // onClick={action}
-          />
-          <p className='HP'>{"Healty: " + unit.healty}</p>
-          <p className='MP'>{"Mana: " + unit.mana}</p>
-          <div className='UnitInfoModalStatus' >
-            {
-              unit.status.map((s, idx) =>
-                <div key={idx}>
-                  <PlayerUnitStatus statusEffectType={s.type} />
-                  <p> {s.name} </p></div>)
-            }
-          </div>
-          <div>
-            {
-              unit.traits.map((t, i) =>
-                <div className='UnitInfoModalTraits' key={i}>
-                  <p>{t.name}</p><img
-                    src={t.imgUrl}
-                    className=""
-                  // onClick={action}
-                  />
-                  <span>{t.desc}</span>
-                </div>
-              )
-            }
-          </div>
-        </div>
-      </div >
-    }
   </>
   )
 }
@@ -166,21 +126,20 @@ function EnemyUnit({ unit }: { unit: Unit }) {
 //     />
 //   </>)
 // }
-function PlayerUnitContainer() {
+function PlayerUnitContainer({ selectUnit }: { selectUnit: (playerId: number, id: number) => void }) {
   const player = useAppSelector((state) => state.match.players[1])
   return (
     <div className='PlayerUnitContainer'>
       {
         [0, 1, 2, 3].map((_, idx) =>
-          <PlayerUnit key={idx} unit={player.units[idx]} />
+          <PlayerUnit key={idx} unit={player.units[idx]} selectUnit={selectUnit} />
         )
       }
     </div >
   )
 }
-export function PlayerUnit({ unit }: { unit: Unit }) {
-  const [activeInfoModal, setAcriveInfoModal] = useState<Boolean>(false)
-  const selectUnit = useAppSelector((state) => state.match.turnOrder[state.match.turn])
+export function PlayerUnit({ unit, selectUnit }: { selectUnit: (playerId: number, id: number) => void, unit: Unit }) {
+  const currentUnit = useAppSelector((state) => state.match.turnOrder[state.match.turn])
   const dispatch = useAppDispatch()
   useEffect(() => {
 
@@ -190,7 +149,7 @@ export function PlayerUnit({ unit }: { unit: Unit }) {
 
     return () => { clearTimeout(timer) }
   }, [unit.animationState.type])
-  return (<><div className='PlayerUnit' onClick={() => setAcriveInfoModal(true)}>
+  return (<><div className='PlayerUnit' onClick={() => selectUnit(unit.player_owner, unit.id)}>
     <div className='PlayerUnitStatus' >
       {
         unit.status.map((s, idx) =>
@@ -210,7 +169,7 @@ export function PlayerUnit({ unit }: { unit: Unit }) {
     ></div>
     <img
       src={unit.imgUrl}
-      className={"UnitPortraitImg " + (selectUnit[0] == unit.player_owner && selectUnit[1] == unit.id ? " SelectEnemyUnit" : null)}
+      className={"UnitPortraitImg " + (currentUnit[0] == unit.player_owner && currentUnit[1] == unit.id ? " SelectEnemyUnit" : null)}
     // onClick={action}
     />
     <img
@@ -235,44 +194,23 @@ export function PlayerUnit({ unit }: { unit: Unit }) {
         <p>{unit.animationState.trait.name}</p>
       </div>
     }
-  </div>
-    {activeInfoModal &&
-      <div className='UnitInfoModal'>
-        <div className='UnitInfoModalBack'>
-          <span className="close" onClick={() => setAcriveInfoModal(false)}>&times;</span>
-          <p className='Name'>{unit.name}</p>
-          <img
-            src={unit.imgUrl}
-            className={"UnitInfoModalPortraitImg"}
-          // onClick={action}
-          />
-          <p className='HP'>{"Healty: " + unit.healty}</p>
-          <p className='MP'>{"Mana: " + unit.mana}</p>
-          <div className='UnitInfoModalStatus' >
-            {
-              unit.status.map((s, idx) =>
-                <div key={idx}>
-                  <PlayerUnitStatus statusEffectType={s.type} />
-                  <p> {s.name} </p></div>)
-            }
-          </div>
-          <div>
-            {
-              unit.traits.map((t, i) =>
-                <div className='UnitInfoModalTraits' key={i}>
-                  <p>{t.name}</p><img
-                    src={t.imgUrl}
-                    className=""
-                  // onClick={action}
-                  />
-                  <span>{t.desc}</span>
-                </div>
-              )
-            }
-          </div>
-        </div>
-      </div >
+    {
+      unit.animationState.type == "Heal" &&
+      <div className={"UnitPortraitImg  AnimationUnit"} >
+        <img
+          src={anim}
+          className={"UnitPortraitImg Heal"}
+        // onClick={action}
+        />
+        <p className={"Healty"}>{unit.animationState.damge}</p>
+        <img
+          src={unit.animationState.trait.imgUrl}
+        // onClick={action}
+        />
+        <p>{unit.animationState.trait.name}</p>
+      </div>
     }
+  </div>
   </>)
 }
 import status_icon1 from '/assets/status_icon1.png'
@@ -312,7 +250,7 @@ function Selection({ is_trait, player_id, unit_id, id }: { is_trait: boolean, pl
   </>)
 }
 type ActionMenuState = "main" | "traits" | "items" | "select" | "selectAlied"
-function Actions({ targetingUnit }: { targetingUnit: number }) {
+function Actions() {
   const [id, setId] = useState<number>(0)
   const [lasActionMenuState, setLastActionMenuState] = useState<ActionMenuState>("main")
   const [actionMenuState, setActionMenuState] = useState<ActionMenuState>("main")
@@ -659,18 +597,68 @@ function Actions({ targetingUnit }: { targetingUnit: number }) {
 }
 
 import backkk from '/assets/backkk.mp4'
+type MainMenuState = { type: "none" } | { type: "unit", playerId: number, id: number } | { type: "winner", id: number } | { type: "turn", id: number }
 function MainMatch() {
+  const [mainMenuState, setMainMenuState] = useState<MainMenuState>({ type: "none" })
+  const match = useAppSelector((state) => state.match)
   const current = useAppSelector((state) => state.match.turnOrder[state.match.turn])
   const currentPlyer = useAppSelector((state) => state.match.players[state.match.turnOrder[state.match.turn][0]])
   const currentUnit = useAppSelector((state) => state.match.players[state.match.turnOrder[state.match.turn][0]].units[state.match.turnOrder[state.match.turn][1]])
+  const selectUnit = useAppSelector((state) => mainMenuState.type == "unit" ? state.match.players[mainMenuState.playerId].units[mainMenuState.id] : null)
   const dispatch = useAppDispatch()
 
-  const [targetingUnit, setTargetingUnit] = useState<number>(0)
+  useEffect(() => {
+    if (match.end) {
+      setMainMenuState({ type: "winner", id: match.winner })
+    }
+  }, [match.end])
 
-  function handleTargetUnit(unit_id: number) {
-    setTargetingUnit(unit_id)
+  function handlerSelectUnit(playerId: number, id: number) {
+    setMainMenuState({ type: "unit", playerId, id })
   }
+
   return (<>
+    {mainMenuState.type == "winner" &&
+      <div className='Banner'>{match.players[mainMenuState.id].name + " Winner"}</div>
+    }
+    {mainMenuState.type == "unit" &&
+      <div className='UnitInfoModal'>
+        <div className='UnitInfoModalBack'>
+          <span className="close" onClick={() => setMainMenuState({ type: "none" })}>&times;</span>
+          <p className='Name'>{selectUnit.name}</p>
+          <img
+            src={selectUnit.imgUrl}
+            className={"UnitInfoModalPortraitImg"}
+          // onClick={action}
+          />
+          <p className='HP'>{"Healty: " + selectUnit.healty}</p>
+          <p className='MP'>{"Mana: " + selectUnit.mana}</p>
+          <div className='UnitInfoModalStatus' >
+            {
+              selectUnit.status.map((s, idx) =>
+                <div key={idx}>
+                  <PlayerUnitStatus statusEffectType={s.type} />
+                  <p> {s.name} </p></div>)
+            }
+          </div>
+          <div>
+            {
+              selectUnit.traits.map((t, i) =>
+                <div className='UnitInfoModalTraits' key={i}>
+                  <p>{t.name}</p><img
+                    src={t.imgUrl}
+                    className=""
+                  // onClick={action}
+                  />
+                  <span>{t.desc}</span>
+                </div>
+              )
+            }
+          </div>
+        </div>
+      </div >
+    }
+
     <div className='TopSide'>
       <Link
         className='Setting'
@@ -681,7 +669,7 @@ function MainMatch() {
         //onClick={action}
         />
       </Link>
-      <EnemyUnitContainer />
+      <EnemyUnitContainer selectUnit={handlerSelectUnit} />
       <video
         src={backkk}
         className="TopBackground"
@@ -692,9 +680,9 @@ function MainMatch() {
       />
     </div>
     <div className='BottomSide'>
-      <PlayerUnitContainer />
+      <PlayerUnitContainer selectUnit={handlerSelectUnit} />
 
-      <Actions targetingUnit={targetingUnit} />
+      <Actions />
     </div >
 
   </>)

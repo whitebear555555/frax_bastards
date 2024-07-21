@@ -149,6 +149,9 @@
   align-items: center;
   justify-content: center;
 }
+.AnimationUnit .Healty{
+  color: green;
+}
 .AnimationUnit .Damage{
   color: red;
 }
@@ -168,8 +171,8 @@
   z-index: 1;
   color: #000;
   animation-delay: 0s;
-  max-height: 150px;
-  max-width: 150px;
+  height: 150px;
+  width: 150px;
   /*background: url("../assets/anim.png");*/
   animation: sprite 1.0s steps(10) infinite;
   object-fit: cover;
@@ -181,8 +184,8 @@
   z-index: 1;
   color: #000;
   animation-delay: 0s;
-  max-height: 150px;
-  max-width: 150px;
+  height: 150px;
+  width: 150px;
   /*background: url("../assets/anim.png");*/
   animation: sprite 1.0s steps(10) infinite;
   object-fit: cover;
@@ -345,7 +348,7 @@
 }
 .UnitInfoModal {
   position: fixed; /* Stay in place */
-  z-index: 1; /* Sit on top */
+  z-index: 2; /* Sit on top */
   left: 0;
   top: 0;
   width: 100%; /* Full width */
@@ -357,7 +360,6 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size:2vh;
   font-weight: bold;
 }
 
@@ -372,6 +374,7 @@
   position: relative;
 
 
+  overflow: scroll;
 
   background-color: rgb(138, 138, 138);
   border: 0.5vw solid black;
@@ -384,9 +387,9 @@
   /*height: 20vh;*/
 
   border: 0.5vw solid black;
-  width: 64%;
+  width: 32%;
   height: 32%;
-  min-width: 250px;
+  min-width: 180px;
   /*align-self: flex-start;*/
   /*margin: auto;*/
 
@@ -692,6 +695,24 @@
   color: white;
   font-size:2vh;
   font-weight: bold;
+}
+.Banner{
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%,-50%);
+  z-index: 1;
+  display: flex;
+  width: 95%;
+  height: 20%;
+  background-color:black;
+  color:white;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: 5vh;
+
+  border: 1.5vw solid white;
 }
 
 
