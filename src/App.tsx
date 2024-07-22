@@ -644,7 +644,7 @@ function MainMatch() {
       <div className='Banner'>{match.players[mainMenuState.id].name + " Winner"}</div>
     }
     {mainMenuState.type == "turn" &&
-      <div className='Banner'>{"Turn " + match.players[mainMenuState.playerId].units[mainMenuState.id].name}</div>
+      <div className='Banner'>{(mainMenuState.playerId == 0 ? "Enemy" : "Your") + " turn " + match.players[mainMenuState.playerId].units[mainMenuState.id].name}</div>
     }
     {mainMenuState.type == "unit" &&
       <div className='UnitInfoModal'>
