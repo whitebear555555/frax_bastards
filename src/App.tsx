@@ -596,8 +596,9 @@ function Actions() {
   )
 }
 
+import backkkgif from '/assets/backkk.gif'
 import backkk from '/assets/backkk.mp4'
-type MainMenuState = { type: "none" } | { type: "unit", playerId: number, id: number } | { type: "winner", id: number } | { type: "turn", id: number }
+type MainMenuState = { type: "none" } | { type: "unit", playerId: number, id: number } | { type: "winner", id: number } | { type: "turn", playerId: number, id: number }
 function MainMatch() {
   const [mainMenuState, setMainMenuState] = useState<MainMenuState>({ type: "none" })
   const match = useAppSelector((state) => state.match)
@@ -613,6 +614,27 @@ function MainMatch() {
     }
   }, [match.end])
 
+  // useEffect(() => {
+  //   setMainMenuState({ type: "turn", playerId: current[0], id: current[1] })
+  //   const timer = setTimeout(() => {
+  //     setMainMenuState({
+  //       type: "none"
+  //     })
+  //   }, 1000)
+  //
+  //   return () => { clearTimeout(timer) }
+  // }, [match.turn])
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setMainMenuState({ type: "turn", playerId: current[0], id: current[1] })
+      setTimeout(() => setMainMenuState({
+        type: "none"
+      }), 1000)
+    }, 1000)
+
+    return () => { clearTimeout(timer) }
+  }, [match.turn])
+
   function handlerSelectUnit(playerId: number, id: number) {
     setMainMenuState({ type: "unit", playerId, id })
   }
@@ -620,6 +642,9 @@ function MainMatch() {
   return (<>
     {mainMenuState.type == "winner" &&
       <div className='Banner'>{match.players[mainMenuState.id].name + " Winner"}</div>
+    }
+    {mainMenuState.type == "turn" &&
+      <div className='Banner'>{"Turn " + match.players[mainMenuState.playerId].units[mainMenuState.id].name}</div>
     }
     {mainMenuState.type == "unit" &&
       <div className='UnitInfoModal'>
